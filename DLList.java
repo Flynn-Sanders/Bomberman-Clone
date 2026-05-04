@@ -1,4 +1,6 @@
-public class DLList<E>{
+import java.util.Iterator;
+
+public class DLList<E> implements Iterable<E>{
     private Node<E> head;
     private Node<E> tail;
     private int size;
@@ -144,5 +146,25 @@ public class DLList<E>{
       }
       return temp;
     }
+
+    @Override
+public Iterator<E> iterator() {
+    return new Iterator<E>() {
+
+        private Node<E> current = head;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            E data = current.get();
+            current = current.next();
+            return data;
+        }
+    };
+}
   }
   

@@ -44,24 +44,24 @@ public class ServerScreen extends JPanel {
 
 	public void startServer() throws IOException {
 		int portNumber = 1024;
-		String message;
 		ServerSocket serverSocket = new ServerSocket(portNumber);
-		
+
+		Manager mg = new Manager();
+
 		while(true){
 			System.out.println("Waiting for a connection...");
 			Socket clientSocket = serverSocket.accept();
 			System.out.println("Got connection!");
 
-			Manager mg = new Manager(this);
-		
+			SwingUtilities.invokeLater(() -> {
+				addMessage("Client connected");
+			});
+
 			ServerThread st = new ServerThread(clientSocket, mg);
 			mg.addThread(st);
 
-			Thread thread = new Thread(st);
-			thread.start();
-			
+			new Thread(st).start();
 		}
-		
 	}
 
 }

@@ -56,4 +56,5 @@ public class MyHashMap<K,V>{
         }   
         return text;
     }
+    public boolean containsKey(K key){ return keySet.contains(key); }
 }

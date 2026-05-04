@@ -1,40 +1,26 @@
-import java.util.ArrayList;
-
 public class Manager {
-    private ArrayList<ServerThread> servers;
-    private ServerScreen sc;
 
-    private int numReady;
+    private DLList<ServerThread> clients;
+    private GameManager gameManager;
 
-    public Manager(ServerScreen screen){
-        sc=screen;
-        servers = new ArrayList<>();
-        numReady = 0;
+    public Manager() {
+        clients = new DLList<>();
+        gameManager = new GameManager();
 
+        new Thread(gameManager).start();
     }
-    
-    public void addThread(ServerThread thread){
-        servers.add(thread);
+
+    public void addThread(ServerThread st) {
+        clients.add(st);
     }
+
     public void broadcast(String message) {
-        for(ServerThread thread : servers) {
-            thread.send(message);
+        for (ServerThread st : clients) {
+            st.send(message);
         }
-        sc.addMessage(message);
     }
 
-    public void readyUp(){
-        numReady++;
-        broadcast(numReady+" out of "+servers.size()+" ready.");
-        if(numReady>=servers.size()) startGame();
-    }
-
-    
-
-    public void startGame() {
-        numReady=0;
-    }
-    public void endGame(){ 
-        numReady = 0;
+    public GameManager getGameManager() {
+        return gameManager;
     }
 }
