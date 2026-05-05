@@ -48,6 +48,9 @@ public class ServerScreen extends JPanel {
 
 		Manager mg = new Manager();
 
+		InetAddress ip = InetAddress.getLocalHost();
+		addMessage("Server IP: " + ip.getHostAddress());
+
 		while(true){
 			System.out.println("Waiting for a connection...");
 			Socket clientSocket = serverSocket.accept();

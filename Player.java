@@ -29,6 +29,9 @@ public class Player {
             y = newY;
         }
     }
+    public void setPosition(int x1, int y1){
+        x=x1; y=y1;
+    }
 
     public int getRow() {
         return y / TileMap.TILE_SIZE;

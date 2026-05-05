@@ -27,6 +27,8 @@ public class ServerThread extends Thread {
         GameManager gm = manager.getGameManager();
 
         switch (command) {
+            case "READY":
+                manager.playerReady(playerId);
             case "MOVE":
                 int dx = Integer.parseInt(parts[2]);
                 int dy = Integer.parseInt(parts[3]);

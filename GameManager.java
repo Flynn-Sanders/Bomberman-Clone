@@ -61,6 +61,12 @@ public class GameManager implements Runnable {
             explode(b);
         }
     }
+    public void initializeGame() {
+        map = new TileMap(13, 11);
+
+        // spawn player(s)
+        players.get("P1").setPosition(0, 0);
+    }
 
     private void explode(Bomb b) {
         // TODO: explosion logic (cross pattern)

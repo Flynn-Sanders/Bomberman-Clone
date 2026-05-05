@@ -20,10 +20,8 @@ public class ClientScreen extends JPanel implements ActionListener {
 
     private JButton readyButton;
 
+    private String username;
 
-    
-    Boolean isGuesser;
-    String animal;
 
     public ClientScreen() {
         this.setLayout(null);
@@ -48,13 +46,17 @@ public class ClientScreen extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == readyButton) {
             try {
-                out.writeObject("READY");
+                out.writeObject("READY:"+username);
                 out.flush();
                 readyButton.setEnabled(false); 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
+    }
+    public void startGame() {
+        remove(readyButton);   
+        repaint();
     }
 
     public void connect() {
@@ -67,16 +69,36 @@ public class ClientScreen extends JPanel implements ActionListener {
 
             System.out.println("Connected to the chat server!");
 
-            String username = JOptionPane.showInputDialog("Enter username:");
+            username = JOptionPane.showInputDialog("Enter username:");
             out.writeObject("JOIN:" + username);
+            out.flush();
 
             while (true) {
-                
+            try {
+                String msg = (String) in.readObject();
+                handleMessage(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                break;
             }
+        }
             
         } catch (Exception e) {
             System.out.println("Connection error: " + e.getMessage());
         }
+    }
+    private void handleMessage(String msg) {
+
+        System.out.println("Received: " + msg);
+
+        if (msg.equals("START")) {
+            SwingUtilities.invokeLater(() -> {
+                startGame();
+            });
+        }
+
+        // player position updates
+        // bomb updates
     }
 }
     
