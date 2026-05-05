@@ -13,6 +13,8 @@ public class ServerScreen extends JPanel {
 	private JTextField textInput;
 	private JTextArea chatArea;
 
+	int nextID=1;
+
 
 	public ServerScreen(){
 
@@ -60,7 +62,7 @@ public class ServerScreen extends JPanel {
 				addMessage("Client connected");
 			});
 
-			ServerThread st = new ServerThread(clientSocket, mg);
+			ServerThread st = new ServerThread(clientSocket, mg,nextID++);
 			mg.addThread(st);
 
 			new Thread(st).start();

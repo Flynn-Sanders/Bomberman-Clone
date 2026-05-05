@@ -16,6 +16,7 @@ public class GameManager implements Runnable {
         map = new TileMap(13, 11);
         running = true;
     }
+    public TileMap getMap(){ return map; }
 
     public void addPlayer(String id) {
         Player p = new Player(id);

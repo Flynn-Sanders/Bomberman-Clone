@@ -7,8 +7,6 @@ import java.awt.event.MouseMotionListener;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
 import java.awt.*;
 
 
@@ -21,6 +19,9 @@ public class ClientScreen extends JPanel implements ActionListener {
     private JButton readyButton;
 
     private String username;
+    private String myPlayerID;
+
+    private int[][] map;
 
 
     public ClientScreen() {
@@ -40,13 +41,27 @@ public class ClientScreen extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+        if(map!=null){
+            int size = TileMap.TILE_SIZE;
+            for(int r=0; r<map.length; r++){
+                for(int c=0; c < map[r].length; c++){
+                    g.setColor(switch (map[r][c]) {
+                        case 0 ->  Color.white;
+                        case 1 -> Color.darkGray;
+                        case 2 -> Color.lightGray;
+                        default -> Color.pink;
+                    });
+                    g.fillRect(c*size, r*size, size, size);
+                }
+            }
+        }
+        //draw players + bombs
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == readyButton) {
             try {
-                out.writeObject("READY:"+username);
+                out.writeObject("READY");
                 out.flush();
                 readyButton.setEnabled(false); 
             } catch (IOException ex) {
@@ -71,7 +86,7 @@ public class ClientScreen extends JPanel implements ActionListener {
 
             username = JOptionPane.showInputDialog("Enter username:");
             out.writeObject("JOIN:" + username);
-            out.flush();
+            out.flush(); 
 
             while (true) {
             try {
@@ -91,14 +106,29 @@ public class ClientScreen extends JPanel implements ActionListener {
 
         System.out.println("Received: " + msg);
 
-        if (msg.equals("START")) {
+        if (msg.startsWith("START")) {
+            updateGridFromString(msg.substring(6));
             SwingUtilities.invokeLater(() -> {
                 startGame();
             });
         }
+        if (msg.startsWith("JOINED:")) {
+            this.myPlayerID = msg.split(":")[1];
+        }
 
         // player position updates
         // bomb updates
+    }
+    public void updateGridFromString(String data) {
+        String[] rows = data.split(";");
+        String[] firstCol = rows[0].split(",");
+        this.map = new int[rows.length][firstCol.length];
+        for (int r = 0; r < rows.length; r++) {
+            String[] cols = rows[r].split(",");
+            for (int c = 0; c < cols.length; c++) {
+                map[r][c] = Integer.parseInt(cols[c]);
+            }
+        }
     }
 }
     

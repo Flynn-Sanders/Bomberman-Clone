@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ServerThread extends Thread {
@@ -5,9 +8,21 @@ public class ServerThread extends Thread {
     private Socket socket;
     private Manager manager;
 
-    public ServerThread(Socket socket, Manager manager) {
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+
+    int id; String displayName; String playerID;
+
+    public ServerThread(Socket socket, Manager manager, int ID) {
         this.socket = socket;
         this.manager = manager;
+        id=ID;
+        playerID="";
+        try {
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.out.flush();
+            this.in = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     public void run() {
@@ -22,31 +37,43 @@ public class ServerThread extends Thread {
         String[] parts = msg.split(":");
 
         String command = parts[0];
-        String playerId = parts[1];
 
         GameManager gm = manager.getGameManager();
 
         switch (command) {
+            case "JOIN":
+                this.displayName = parts[1];
+                this.playerID = displayName + "#" + id; // unique id
+                
+                manager.getGameManager().addPlayer(playerID); 
+                
+                send("JOINED:" + playerID); 
+                break;
             case "READY":
-                manager.playerReady(playerId);
+                manager.playerReady(playerID);
+                break;
             case "MOVE":
-                int dx = Integer.parseInt(parts[2]);
-                int dy = Integer.parseInt(parts[3]);
-                gm.movePlayer(playerId, dx, dy);
+                int dx = Integer.parseInt(parts[1]);
+                int dy = Integer.parseInt(parts[2]);
+                gm.movePlayer(playerID, dx, dy);
                 break;
 
             case "BOMB":
-                gm.placeBomb(playerId);
+                gm.placeBomb(playerID);
                 break;
         }
     }
 
     public void send(String msg) {
-        // output stream send
+        try {
+            out.writeObject(msg);
+            out.flush();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private String read() {
-        // input stream read
-        return "";
+        try {
+            return (String) in.readObject(); 
+        } catch (Exception e) { return ""; }
     }
 }

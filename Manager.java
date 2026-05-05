@@ -34,8 +34,8 @@ public class Manager {
     }
     public void startGame() {
         gameManager.initializeGame();
-    
-        broadcast("START");
+        String mapData= gameManager.getMap().toString();
+        broadcast("START:"+mapData);
     }
 
     public GameManager getGameManager() {

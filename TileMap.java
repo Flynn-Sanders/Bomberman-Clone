@@ -13,7 +13,7 @@ public class TileMap {
         generateMap();
     }
 
-    private void generateMap() {
+    private void generateMap() { //0 empty, 1 solid wall, 2 breakable
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 if (r % 2 == 1 && c % 2 == 1) {
@@ -39,5 +39,17 @@ public class TileMap {
         if (grid[row][col] == 2) {
             grid[row][col] = 0;
         }
+    }
+
+    @Override
+    public String toString(){
+        String text = "";
+        for(int[] r: grid){
+            for(int c : r){
+                text+=c+",";
+            }
+            text+=";";
+        }
+        return text;
     }
 }
