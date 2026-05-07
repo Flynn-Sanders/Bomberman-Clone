@@ -52,7 +52,7 @@ public class ServerThread extends Thread {
                 if (parts.length < 2) return;
                 this.displayName = parts[1];
                 this.playerID = displayName + "#" + id; // unique id
-                player = manager.getGameManager().addPlayer(playerID);
+                this.player = manager.getGameManager().addPlayer(playerID);
                 send("JOINED:" + playerID);
                 break;
             case "READY":
@@ -79,16 +79,16 @@ public class ServerThread extends Thread {
             case "MOVE_STOP":
                 switch(parts[1]){
                     case "UP":
-                        player.movingUp=true;
+                        player.movingUp=false;
                         break;
                     case "DOWN":
-                        player.movingDown=true;
+                        player.movingDown=false;
                         break;
                     case "LEFT":
-                        player.movingLeft=true;
+                        player.movingLeft=false;
                         break;
                     case "RIGHT":
-                        player.movingRight=true;
+                        player.movingRight=false;
                         break;
                 }
                 break;

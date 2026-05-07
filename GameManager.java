@@ -82,7 +82,13 @@ public class GameManager implements Runnable {
     }
 
     private void updatePlayers() {
-        // movement smoothing / status updates ?? maybe not needed since clients handle movement locally and we just send updates
+        DLList<String> playerKeys = players.keySet().toLinkedList();
+        for (String id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null && p.isAlive()) {
+                p.update(map); 
+            }
+        }
     }
 
     private void checkWinCondition() {
