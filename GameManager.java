@@ -22,21 +22,16 @@ public class GameManager implements Runnable {
     }
     public TileMap getMap(){ return map; }
 
-    public void addPlayer(String id) {
+    public Player addPlayer(String id) {
         Player p = new Player(id);
         players.put(id, p);
+        return p;
     }
 
     public void removePlayer(String id) {
         players.remove(id);
     }
 
-    public void movePlayer(String id, int dx, int dy) {
-        Player p = players.get(id);
-        if (p != null && p.isAlive()) {
-            p.move(dx, dy, map);
-        }
-    }
 
     public void placeBomb(String playerId) {
         Player p = players.get(playerId);

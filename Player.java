@@ -10,6 +10,8 @@ public class Player {
 
     private boolean alive;
 
+    public boolean movingUp, movingDown, movingLeft, movingRight;
+
     public Player(String id) {
         this.id = id;
         this.x = 0;
@@ -18,6 +20,13 @@ public class Player {
         this.bombCount = 1;
         this.bombRange = 1;
         this.alive = true;
+    }
+
+    public void update(TileMap map) {
+        if (movingUp) move(0, -1, map);
+        if (movingDown) move(0, 1, map);
+        if (movingLeft) move(-1, 0, map);
+        if (movingRight) move(1, 0, map);
     }
 
     public void move(int dx, int dy, TileMap map) {

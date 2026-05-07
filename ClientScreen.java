@@ -19,6 +19,8 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     private String username;
     private String myPlayerID;
 
+    private boolean[] keys = new boolean[256];
+
     private ClientGameState gameState;
 
     private boolean started;
@@ -124,44 +126,33 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     public void keyTyped(KeyEvent e) {}
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_W:
-                sendMessage("PRESS:W");
-                break;
-            case KeyEvent.VK_A:
-                sendMessage("PRESS:A"); 
-                break; 
-            case KeyEvent.VK_S:
-                    sendMessage("PRESS:S");
-                    break;
-            case KeyEvent.VK_D:
-                    sendMessage("PRESS:D"); 
-                    break;
-            default:
-                break;
-        }
+public void keyPressed(KeyEvent e) {
+    int code = e.getKeyCode();
+    if (!keys[code]) { // only send if not alr pressed
+        keys[code] = true;
+        sendMoveMessage(code, "MOVE_START");
     }
+}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_W:
-                sendMessage("RELEASE:W");
-                break;
-            case KeyEvent.VK_A:
-                sendMessage("RELEASE:A"); 
-                break; 
-            case KeyEvent.VK_S:
-                    sendMessage("RELEASE:S");
-                    break;
-            case KeyEvent.VK_D:
-                    sendMessage("RELEASE:D"); 
-                    break;
-            default:
-                break;
-        }
+@Override
+public void keyReleased(KeyEvent e) {
+    int code = e.getKeyCode();
+    keys[code] = false;
+    sendMoveMessage(code, "MOVE_STOP");
+}
+
+private void sendMoveMessage(int code, String command) {
+    String dir=switch(code){
+        case KeyEvent.VK_W -> "UP";
+        case KeyEvent.VK_A -> "LEFT";
+        case KeyEvent.VK_S -> "DOWN";
+        case KeyEvent.VK_D -> "RIGHT";
+        default -> "";
+    };
+    if (!dir.equals("")) {
+        sendMessage(command + ":" + dir);
     }
+}
 
     public void startGame() {
         remove(readyButton);   

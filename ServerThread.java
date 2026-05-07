@@ -8,6 +8,8 @@ public class ServerThread extends Thread {
     private Socket socket;
     private Manager manager;
 
+    private Player player;
+
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
@@ -50,7 +52,7 @@ public class ServerThread extends Thread {
                 if (parts.length < 2) return;
                 this.displayName = parts[1];
                 this.playerID = displayName + "#" + id; // unique id
-                manager.getGameManager().addPlayer(playerID);
+                player = manager.getGameManager().addPlayer(playerID);
                 send("JOINED:" + playerID);
                 break;
             case "READY":
@@ -58,14 +60,36 @@ public class ServerThread extends Thread {
                     manager.playerReady(playerID);
                 }
                 break;
-            case "MOVE":
-                if (parts.length < 3) return;
-                try {
-                    int dx = Integer.parseInt(parts[1]);
-                    int dy = Integer.parseInt(parts[2]);
-                    gm.movePlayer(playerID, dx, dy);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
+            case "MOVE_START":
+                switch(parts[1]){
+                    case "UP":
+                        player.movingUp=true;
+                        break;
+                    case "DOWN":
+                        player.movingDown=true;
+                        break;
+                    case "LEFT":
+                        player.movingLeft=true;
+                        break;
+                    case "RIGHT":
+                        player.movingRight=true;
+                        break;
+                }
+                break;
+            case "MOVE_STOP":
+                switch(parts[1]){
+                    case "UP":
+                        player.movingUp=true;
+                        break;
+                    case "DOWN":
+                        player.movingDown=true;
+                        break;
+                    case "LEFT":
+                        player.movingLeft=true;
+                        break;
+                    case "RIGHT":
+                        player.movingRight=true;
+                        break;
                 }
                 break;
             case "BOMB":
