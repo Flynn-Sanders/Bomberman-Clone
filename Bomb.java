@@ -22,6 +22,7 @@ public class Bomb implements Comparable<Bomb> {
 
     public int getRow() { return row; }
     public int getCol() { return col; }
+    public long getTimer() { return placedTime; }
     public int getRange() { return range; }
 
     @Override

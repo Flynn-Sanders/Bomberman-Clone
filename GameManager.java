@@ -9,12 +9,16 @@ public class GameManager implements Runnable {
 
     private boolean running;
 
-    public GameManager() {
+    Manager mg;
+
+    public GameManager(Manager manager) {
         players = new MyHashMap<>();
         bombs = new MyHashMap<>();
         bombQueue = new MinHeap<>();
+        mg = manager;
         map = new TileMap(13, 11);
         running = true;
+
     }
     public TileMap getMap(){ return map; }
 
@@ -79,15 +83,39 @@ public class GameManager implements Runnable {
     }
 
     private void explode(Bomb b) {
-        // damage players, destroy blocks, chain bombs
+        // damage players, destroy blocks, chain bombs, etc
     }
 
     private void updatePlayers() {
-        // optional: movement smoothing / status updates
+        // movement smoothing / status updates ?? maybe not needed since clients handle movement locally and we just send updates
     }
 
     private void checkWinCondition() {
-        // count alive players
+        // count alive players 
+    }
+
+    private String getStateString() {
+        StringBuilder sb = new StringBuilder();
+        
+        // P:id,row,col;
+        DLList<String> playerKeys = players.keySet().toLinkedList();
+        for (String id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null) {
+                sb.append("P:").append(id).append(",").append(p.getRow()).append(",").append(p.getCol()).append(";");
+            }
+        }
+        
+        // B:row,col,timer;
+        DLList<String> bombKeys = bombs.keySet().toLinkedList();
+        for (String key : bombKeys) {
+            Bomb b = bombs.get(key);
+            if (b != null) {
+                sb.append("B:").append(b.getRow()).append(",").append(b.getCol()).append(",").append(b.getTimer()).append(";");
+            }
+        }
+        
+        return sb.toString();
     }
 
     @Override
@@ -97,7 +125,7 @@ public class GameManager implements Runnable {
             updateBombs();
             checkWinCondition();
 
-            // TODO: send state to clients
+            mg.broadcast("STATE:"+getStateString());
 
             try {
                 Thread.sleep(16); // ~60 FPS

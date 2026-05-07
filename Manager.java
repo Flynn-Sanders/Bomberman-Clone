@@ -8,7 +8,7 @@ public class Manager {
 
     public Manager() {
         clients = new DLList<>();
-        gameManager = new GameManager();
+        gameManager = new GameManager(this);
         readyCount=0; requiredReady=0;
 
         new Thread(gameManager).start();
