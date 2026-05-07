@@ -31,9 +31,12 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         gameState = new ClientGameState();
         started=false;
 
-        readyButton = new JButton("Ready");
-        readyButton.setBounds(300, 620, 100, 30);
+        readyButton = new JButton("READY");
+        readyButton.setBounds((getWidth()-200)/2, 500, 200, 50);
+        readyButton.setFont(new Font("Arial",Font.BOLD,30));
         readyButton.addActionListener(this);
+        readyButton.setForeground(Color.green);
+        readyButton.setBackground(Color.darkGray);
         this.add(readyButton);
 
         this.setFocusable(true);
@@ -45,15 +48,16 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        readyButton.setBounds((getWidth() - 200) / 2, 500, 200, 50);
         if(!started){
             g.setColor(Color.black);
             g.fillRect(0, 0, 1920, 1080);
             g.setColor(Color.red);
-            Font f = new Font("Arial",Font.BOLD,40);//title
+            Font f = new Font("Arial",Font.BOLD,90);//title
             g.setFont(f);
             FontMetrics fm = g.getFontMetrics();
             int width = fm.stringWidth("BOMBERMAN");
-            int x = (WIDTH-width)/2;
+            int x = (getWidth()-width)/2;
             g.drawString("BOMBERMAN", x, 300);
         }
         else{
@@ -162,6 +166,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     public void startGame() {
         remove(readyButton);   
         started=true;
+        this.requestFocusInWindow();
         repaint();
     }
 
