@@ -32,7 +32,7 @@ public class TileMap {
         if (row < 0 || col < 0 || row >= rows || col >= cols)
             return true;
 
-        return grid[row][col] == 1;
+        return grid[row][col] != 0;
     }
 
     public void destroyBlock(int row, int col) {
@@ -43,13 +43,15 @@ public class TileMap {
 
     @Override
     public String toString(){
-        String text = "";
-        for(int[] r: grid){
-            for(int c : r){
-                text+=c+",";
+        StringBuilder text = new StringBuilder();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                text.append(grid[r][c]).append(",");
             }
-            text+=";";
+            if (r < rows - 1) {
+                text.append(";");
+            }
         }
-        return text;
+        return text.toString();
     }
 }

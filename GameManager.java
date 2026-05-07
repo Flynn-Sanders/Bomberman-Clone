@@ -65,12 +65,20 @@ public class GameManager implements Runnable {
     public void initializeGame() {
         map = new TileMap(13, 11);
 
-        // spawn player(s)
-        players.get("P1").setPosition(0, 0);
+        // spawn the first connected player at the top-left corner if one exists
+        if (players.size() > 0) {
+            DLList<String> keys = players.keySet().toLinkedList();
+            String firstKey = keys.get(0);
+            if (firstKey != null) {
+                Player p = players.get(firstKey);
+                if (p != null) {
+                    p.setPosition(0, 0);
+                }
+            }
+        }
     }
 
     private void explode(Bomb b) {
-        // TODO: explosion logic (cross pattern)
         // damage players, destroy blocks, chain bombs
     }
 

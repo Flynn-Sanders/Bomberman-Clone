@@ -1,60 +1,47 @@
 public class MyHashMap<K,V>{
-    private Object[] hashArray;
-    private int size;
-    private MyHashSet<K> keySet;
+    private java.util.HashMap<K,V> map;
 
     public MyHashMap(){
-        size=0;
-        hashArray = new Object[676];
-        keySet = new MyHashSet<>();
+        map = new java.util.HashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
     public V put(K key, V value){
-        if (!keySet.contains(key)) size++;
-        V toReturn = (V)hashArray[key.hashCode()];
-        hashArray[key.hashCode()] = value;
-        keySet.add(key);
-        
-        return toReturn;
-        
+        return map.put(key, value);
     }
     
-    @SuppressWarnings("unchecked")
     public V get(Object o){
-        return (V) hashArray[o.hashCode()];
+        return map.get(o);
     }
 
-    @SuppressWarnings("unchecked")
     public V remove(Object o){
-        V toReturn = (V)hashArray[o.hashCode()];
-        hashArray[o.hashCode()] = null;
-        keySet.remove(o);
-        size--;
-        return toReturn;
+        return map.remove(o);
     }
 
-    public int size() { return size; }
-    public MyHashSet<K> keySet() { return keySet; }
+    public int size() { return map.size(); }
+    public MyHashSet<K> keySet() {
+        MyHashSet<K> set = new MyHashSet<>();
+        for (K key : map.keySet()) {
+            set.add(key);
+        }
+        return set;
+    }
 
+    @Override
     public String toString() {
-        String text = "";
-        DLList<K> list = keySet.toLinkedList();
-        for (int i = 0; i < list.size(); i++) {
-            K key = list.get(i); 
-            int index = key.hashCode();
-            text += key + " : " + hashArray[index] + "\n";
-        }   
-        return text;
+        StringBuilder text = new StringBuilder();
+        for (java.util.Map.Entry<K,V> entry : map.entrySet()) {
+            text.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+        }
+        return text.toString();
     }
+
     public String keyString(){
-        String text = "";
-        DLList<K> list = keySet.toLinkedList();
-        for (int i = 0; i < list.size(); i++) {
-            K key = list.get(i); 
-            text += key.toString()+"\n";
-        }   
-        return text;
+        StringBuilder text = new StringBuilder();
+        for (K key : map.keySet()) {
+            text.append(key.toString()).append("\n");
+        }
+        return text.toString();
     }
-    public boolean containsKey(K key){ return keySet.contains(key); }
+
+    public boolean containsKey(K key){ return map.containsKey(key); }
 }

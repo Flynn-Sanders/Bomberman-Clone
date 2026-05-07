@@ -1,59 +1,48 @@
 public class MyHashSet<E>{
-    private Object[] hashArray;
-    private int size;
+    private java.util.HashSet<E> set;
     
     public MyHashSet(){
-      size = 0;
-      hashArray = new Object[676];
+      set = new java.util.HashSet<>();
     }
     public boolean contains(Object o){
-      int location = o.hashCode();
-      if(hashArray[location] != null && o.equals(hashArray[location])){
-        return true;
-      }
-      return false;
+      return set.contains(o);
     }
     public void clear(){
-      size = 0;
-      hashArray = new Object[1000];
+      set.clear();
     }
     public boolean add(E e){
-      if(contains(e)) return false;
-      hashArray[e.hashCode()] = e;
-      size++; return true;
+      return set.add(e);
     }
     public boolean remove(Object o){
-      if(!contains(o)) return false;
-        hashArray[o.hashCode()] = null;
-      size--; return true;
+      return set.remove(o);
     }
-    @SuppressWarnings("unchecked")
     public E get(int index){
-      return (E)hashArray[index];
+      int current = 0;
+      for (E e : set) {
+        if (current == index) {
+          return e;
+        }
+        current++;
+      }
+      return null;
     }
-    public int size(){ return size; }
+    public int size(){ return set.size(); }
     
-    
-    @SuppressWarnings("unchecked")
     public DLList<E> toLinkedList(){
       DLList<E> dLList = new DLList<E>();
-      for(Object o : hashArray){
-        if(o!=null){
-          dLList.add((E)o);
-        }
+      for(E e : set){
+        dLList.add(e);
       }
       return dLList;
     }
   
     @Override
     public String toString(){
-      String string = "";
-      for(Object o : hashArray){
-        if(o!=null){;
-          string = string + o.toString() + "\n";
-        }
+      StringBuilder string = new StringBuilder();
+      for(E o : set){
+        string.append(o.toString()).append("\n");
       }
-      return string;
+      return string.toString();
     }
   } 
       

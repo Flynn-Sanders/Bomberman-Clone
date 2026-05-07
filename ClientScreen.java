@@ -121,11 +121,19 @@ public class ClientScreen extends JPanel implements ActionListener {
     }
     public void updateGridFromString(String data) {
         String[] rows = data.split(";");
+        int effectiveRows = rows.length;
+        if (effectiveRows > 0 && rows[effectiveRows - 1].isEmpty()) {
+            effectiveRows--;
+        }
+        if (effectiveRows == 0) {
+            return;
+        }
+
         String[] firstCol = rows[0].split(",");
-        this.map = new int[rows.length][firstCol.length];
-        for (int r = 0; r < rows.length; r++) {
+        this.map = new int[effectiveRows][firstCol.length];
+        for (int r = 0; r < effectiveRows; r++) {
             String[] cols = rows[r].split(",");
-            for (int c = 0; c < cols.length; c++) {
+            for (int c = 0; c < cols.length && c < firstCol.length; c++) {
                 map[r][c] = Integer.parseInt(cols[c]);
             }
         }
