@@ -28,7 +28,7 @@ public class ClientGameState {
                 int row = Integer.parseInt(values[1]);
                 int col = Integer.parseInt(values[2]);
                 Player p = new Player(id);
-                p.setPosition(row, col);
+                p.setPosition(col * TileMap.TILE_SIZE, row * TileMap.TILE_SIZE);
                 players.put(id, p);
             } else if (type.equals("B") && values.length >= 3) {
                 // B: row, col, timer

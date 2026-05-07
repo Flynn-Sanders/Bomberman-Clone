@@ -151,11 +151,11 @@ public class DLList<E> implements Iterable<E>{
 public Iterator<E> iterator() {
     return new Iterator<E>() {
 
-        private Node<E> current = head;
+        private Node<E> current = head.next();
 
         @Override
         public boolean hasNext() {
-            return current != null;
+            return current != tail;
         }
 
         @Override
