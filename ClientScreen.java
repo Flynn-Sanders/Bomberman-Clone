@@ -1,13 +1,9 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.awt.*;
+import javax.swing.*;
 
 
 public class ClientScreen extends JPanel implements ActionListener {
@@ -21,11 +17,14 @@ public class ClientScreen extends JPanel implements ActionListener {
     private String username;
     private String myPlayerID;
 
+    private ClientGameState gameState;
+
     private int[][] map;
 
 
     public ClientScreen() {
         this.setLayout(null);
+        gameState = new ClientGameState();
 
         readyButton = new JButton("Ready");
         readyButton.setBounds(300, 620, 100, 30);
@@ -41,21 +40,43 @@ public class ClientScreen extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(map!=null){
+        
+        if (map != null) {
             int size = TileMap.TILE_SIZE;
-            for(int r=0; r<map.length; r++){
-                for(int c=0; c < map[r].length; c++){
+            for (int r = 0; r < map.length; r++) {
+                for (int c = 0; c < map[r].length; c++) {
                     g.setColor(switch (map[r][c]) {
-                        case 0 ->  Color.white;
+                        case 0 -> Color.white;
                         case 1 -> Color.darkGray;
                         case 2 -> Color.lightGray;
-                        default -> Color.pink;
+                        default -> Color.pink; 
+                        // 0 = empty, 1 = indestructible wall, 2 = destructible wall
+                        //will use images later
                     });
-                    g.fillRect(c*size, r*size, size, size);
+                    g.fillRect(c * size, r * size, size, size);
                 }
             }
         }
-        //draw players + bombs
+        
+        MyHashMap<String, Player> players = gameState.getPlayers();
+        DLList<String> playerKeys = players.keySet().toLinkedList();
+        for (String id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null) {
+                g.setColor(Color.blue);  // change to sprite later
+                g.fillRect(p.getCol() * TileMap.TILE_SIZE, p.getRow() * TileMap.TILE_SIZE, TileMap.TILE_SIZE, TileMap.TILE_SIZE);
+            }
+        }
+        
+        MyHashMap<String, Bomb> bombs = gameState.getBombs();
+        DLList<String> bombKeys = bombs.keySet().toLinkedList();
+        for (String key : bombKeys) {
+            Bomb b = bombs.get(key);
+            if (b != null) {
+                g.setColor(Color.red);  // also change to sprite later
+                g.fillOval(b.getCol() * TileMap.TILE_SIZE, b.getRow() * TileMap.TILE_SIZE, TileMap.TILE_SIZE, TileMap.TILE_SIZE);
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -115,9 +136,13 @@ public class ClientScreen extends JPanel implements ActionListener {
         if (msg.startsWith("JOINED:")) {
             this.myPlayerID = msg.split(":")[1];
         }
+        if (msg.startsWith("STATE:")) { 
+            gameState.updateFromServer(msg.substring(6));
+            SwingUtilities.invokeLater(() -> {
+                repaint();  
+            });
+        }
 
-        // player position updates
-        // bomb updates
     }
     public void updateGridFromString(String data) {
         String[] rows = data.split(";");

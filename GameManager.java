@@ -94,7 +94,8 @@ public class GameManager implements Runnable {
         // count alive players 
     }
 
-    private String getStateString() {
+    private String getStateString() { 
+        // format: P:id,row,col;B:row,col,timer;...
         StringBuilder sb = new StringBuilder();
         
         // P:id,row,col;
