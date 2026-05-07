@@ -1,6 +1,6 @@
 public class TileMap {
 
-    public static final int TILE_SIZE = 40;
+    public static final int TILE_SIZE = 65;
 
     private int rows, cols;
     private int[][] grid;
@@ -17,9 +17,11 @@ public class TileMap {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 if (r % 2 == 1 && c % 2 == 1) {
-                    grid[r][c] = 1; // solid wall
+                    grid[r][c] = 1; // solid walls in repeating pattern
+                } else if( (r==0 || r==rows-1) && (c==0 || c==cols-1) ){
+                    grid[r][c]=0; //empty at 4 corners for players
                 } else {
-                    grid[r][c] = Math.random() < 0.3 ? 2 : 0; // 1/3 chance breakable otherwise nothing
+                    grid[r][c] = Math.random() < 0.3 ? 2 : 0; // 33% chance breakable on all other squares
                 }
             }
         }
