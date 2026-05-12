@@ -82,14 +82,16 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             
             MyHashMap<String, Player> players = gameState.getPlayers();
             DLList<String> playerKeys = players.keySet().toLinkedList();
+            int size = TileMap.TILE_SIZE;
             for (String id : playerKeys) {
-                Player p = players.get(id); 
+            Player p = gameState.getPlayers().get(id);
                 if (p != null) {
-                    g.setColor(Color.blue);
-                    g.fillOval(p.getX(), p.getY(), TileMap.TILE_SIZE - 4, TileMap.TILE_SIZE - 4);
+                    g.setColor(id.equals(myPlayerID) ? Color.BLUE : Color.RED);
+                    // DRAW PIXELS, NOT GRID COORDS
+                    g.fillOval(p.getX(), p.getY(), size - 4, size - 4);
                 }
             }
-                        
+                                
             MyHashMap<String, Bomb> bombs = gameState.getBombs();
             DLList<String> bombKeys = bombs.keySet().toLinkedList();
             for (String key : bombKeys) {
@@ -126,34 +128,48 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     public void keyTyped(KeyEvent e) {}
 
     @Override
-public void keyPressed(KeyEvent e) {
-    int code = e.getKeyCode();
-    if (!keys[code]) { // only send if not alr pressed
-        keys[code] = true;
-        sendMoveMessage(code, "MOVE_START");
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
+        // only send once per press
+        if (code < keys.length && !keys[code]) {
+            keys[code] = true;
+            sendMoveCommand("MOVE_START", code);
+        }
     }
-}
 
-@Override
-public void keyReleased(KeyEvent e) {
-    int code = e.getKeyCode();
-    keys[code] = false;
-    sendMoveMessage(code, "MOVE_STOP");
-}
-
-private void sendMoveMessage(int code, String command) {
-    String dir=switch(code){
-        case KeyEvent.VK_W -> "UP";
-        case KeyEvent.VK_A -> "LEFT";
-        case KeyEvent.VK_S -> "DOWN";
-        case KeyEvent.VK_D -> "RIGHT";
-        default -> "";
-    };
-    if (!dir.equals("")) {
-        System.out.println("Sending: " + command + ":" + dir); // Debug log
-        sendMessage(command + ":" + dir);
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code < keys.length) {
+            keys[code] = false;
+            sendMoveCommand("MOVE_STOP", code);
+        }
     }
-}
+
+    
+    private void sendMoveCommand(String action, int code) {
+        String dir = "";
+        if (code == KeyEvent.VK_W) dir = "UP";
+        else if (code == KeyEvent.VK_S) dir = "DOWN";
+        else if (code == KeyEvent.VK_A) dir = "LEFT";
+        else if (code == KeyEvent.VK_D) dir = "RIGHT";
+        else if (code == KeyEvent.VK_SPACE && action.equals("MOVE_START")) {
+            try {
+                out.writeObject("BOMB");
+                out.flush();
+            } catch (Exception ex) {}
+            return;
+        }
+
+        if (!dir.isEmpty()) {
+            try {
+                out.writeObject(action + ":" + dir);
+                out.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
     public void startGame() {
         remove(readyButton);   

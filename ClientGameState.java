@@ -22,15 +22,15 @@ public class ClientGameState {
             String type = parts[0];
             String[] values = parts[1].split(",");
             
-            if (type.equals("P") && values.length >= 3) {
-                // Player: id, row, col
+                if (type.equals("P") && values.length >= 3) {
                 String id = values[0];
-                int row = Integer.parseInt(values[1]);
-                int col = Integer.parseInt(values[2]);
+                int posX = Integer.parseInt(values[1]);
+                int posY = Integer.parseInt(values[2]);
+                
                 Player p = new Player(id);
-                p.setPosition(col * TileMap.TILE_SIZE, row * TileMap.TILE_SIZE);
+                p.setPosition(posX, posY); 
                 players.put(id, p);
-            } else if (type.equals("B") && values.length >= 3) {
+            }else if (type.equals("B") && values.length >= 3) {
                 // B: row, col, timer
                 int row = Integer.parseInt(values[0]);
                 int col = Integer.parseInt(values[1]);

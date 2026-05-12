@@ -104,7 +104,7 @@ public class GameManager implements Runnable {
     }
 
     private String getStateString() { 
-        // format: P:id,row,col;B:row,col,timer;...
+        // format: P:id,x,y;B:row,col,timer;...
         StringBuilder sb = new StringBuilder();
         
         // P:id,row,col;
@@ -112,7 +112,7 @@ public class GameManager implements Runnable {
         for (String id : playerKeys) {
             Player p = players.get(id);
             if (p != null) {
-                sb.append("P:").append(id).append(",").append(p.getRow()).append(",").append(p.getCol()).append(";");
+                sb.append("P:").append(id).append(",").append(p.getX()).append(",").append(p.getY()).append(";");
             }
         }
         
