@@ -61,19 +61,25 @@ public class GameManager implements Runnable {
             explode(b);
         }
     }
-    public void initializeGame() {
+           public void initializeGame() {
         map = new TileMap(13, 11);
-
-        // spawn players
-        int x1=0; int y1=0;
+    
         if (players.size() > 0) {
             DLList<String> keys = players.keySet().toLinkedList();
-            for(String id:keys){
+            int[][] corners = {
+                {0, 0}, // top left
+                {(map.getCols() - 1) * TileMap.TILE_SIZE, 0}, // top right
+                {0, (map.getRows() - 1) * TileMap.TILE_SIZE}, // bottom left
+                {(map.getCols() - 1) * TileMap.TILE_SIZE, (map.getRows() - 1) * TileMap.TILE_SIZE} // bottom right
+            };
+    
+            int i = 0;
+            for (String id : keys) {
                 Player p = players.get(id);
-                if(p!=null){
-                    p.setPosition(x1, y1); //going aroung the 4 corners?
-                    x1= (x1==0) ? map.getCols()-1 : 0;
-                    y1 = (y1==map.getRows()-1 || x1==map.getCols()-1) ? map.getRows()-1 : 0;
+                if (p != null) {
+                    int[] corner = corners[i % 4];
+                    p.setPosition(corner[0], corner[1]); // Use pixel positions
+                    i++;
                 }
             }
         }
@@ -117,6 +123,9 @@ public class GameManager implements Runnable {
             if (b != null) {
                 sb.append("B:").append(b.getRow()).append(",").append(b.getCol()).append(",").append(b.getTimer()).append(";");
             }
+        }
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ';') {
+            sb.deleteCharAt(sb.length() - 1);
         }
         
         return sb.toString();

@@ -62,36 +62,42 @@ public class ServerThread extends Thread {
                     manager.playerReady(playerID);
                 }
                 break;
-            case "MOVE_START":
-                switch(parts[1]){
-                    case "UP":
-                        player.movingUp=true;
-                        break;
-                    case "DOWN":
-                        player.movingDown=true;
-                        break;
-                    case "LEFT":
-                        player.movingLeft=true;
-                        break;
-                    case "RIGHT":
-                        player.movingRight=true;
-                        break;
+                case "MOVE_START":
+                System.out.println("MOVE_START received: " + parts[1]); // Debug
+                if (player != null) { // Ensure player exists
+                    switch (parts[1]) {
+                        case "UP":
+                            player.movingUp = true;
+                            break;
+                        case "DOWN":
+                            player.movingDown = true;
+                            break;
+                        case "LEFT":
+                            player.movingLeft = true;
+                            break;
+                        case "RIGHT":
+                            player.movingRight = true;
+                            break;
+                    }
                 }
                 break;
             case "MOVE_STOP":
-                switch(parts[1]){
-                    case "UP":
-                        player.movingUp=false;
-                        break;
-                    case "DOWN":
-                        player.movingDown=false;
-                        break;
-                    case "LEFT":
-                        player.movingLeft=false;
-                        break;
-                    case "RIGHT":
-                        player.movingRight=false;
-                        break;
+                System.out.println("MOVE_STOP received: " + parts[1]); // Debug
+                if (player != null) { // Ensure player exists
+                    switch (parts[1]) {
+                        case "UP":
+                            player.movingUp = false;
+                            break;
+                        case "DOWN":
+                            player.movingDown = false;
+                            break;
+                        case "LEFT":
+                            player.movingLeft = false;
+                            break;
+                        case "RIGHT":
+                            player.movingRight = false;
+                            break;
+                    }
                 }
                 break;
             case "BOMB":

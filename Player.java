@@ -22,23 +22,29 @@ public class Player {
         this.alive = true;
     }
 
-    public void update(TileMap map) {
+        public void update(TileMap map) {
+        System.out.println("Updating player " + id + " at (" + x + ", " + y + ")"); // Debug log
         if (movingUp) move(0, -1, map);
         if (movingDown) move(0, 1, map);
         if (movingLeft) move(-1, 0, map);
         if (movingRight) move(1, 0, map);
     }
-
+    
     public void move(int dx, int dy, TileMap map) {
         int nextX = x + dx * speed;
         int nextY = y + dy * speed;
-        
-        int playerSize = TileMap.TILE_SIZE - 10; 
+    
+        System.out.println("Attempting to move to (" + nextX + ", " + nextY + ")"); // Debug log
+    
+        int playerSize = TileMap.TILE_SIZE - 10;
         int offset = 5;
-
+    
         if (!map.isAreaBlocked(nextX + offset, nextY + offset, playerSize, playerSize)) {
             x = nextX;
             y = nextY;
+            System.out.println("Moved to (" + x + ", " + y + ")"); // Debug log
+        } else {
+            System.out.println("Blocked at (" + nextX + ", " + nextY + ")"); // Debug log
         }
     }
     public void setPosition(int x1, int y1){

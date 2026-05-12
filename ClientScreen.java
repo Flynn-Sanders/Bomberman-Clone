@@ -150,6 +150,7 @@ private void sendMoveMessage(int code, String command) {
         default -> "";
     };
     if (!dir.equals("")) {
+        System.out.println("Sending: " + command + ":" + dir); // Debug log
         sendMessage(command + ":" + dir);
     }
 }
@@ -191,7 +192,7 @@ private void sendMoveMessage(int code, String command) {
     }
     private void handleMessage(String msg) {
 
-        System.out.println("Received: " + msg);
+        // System.out.println("Received: " + msg);
 
         if (msg.startsWith("START")) {
             updateGridFromString(msg.substring(6));
