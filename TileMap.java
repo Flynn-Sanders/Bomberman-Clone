@@ -36,12 +36,20 @@ public class TileMap {
 
         return grid[row][col] != 0;
     }
+    public boolean isAreaBlocked(int x, int y, int width, int height) {
+        return isBlocked(x, y) || 
+               isBlocked(x + width - 1, y) || 
+               isBlocked(x, y + height - 1) || 
+               isBlocked(x + width - 1, y + height - 1);
+    }
 
     public void destroyBlock(int row, int col) {
         if (grid[row][col] == 2) {
             grid[row][col] = 0;
         }
     }
+    public int getRows(){return rows;}
+    public int getCols(){ return cols; }
 
     @Override
     public String toString(){

@@ -64,14 +64,16 @@ public class GameManager implements Runnable {
     public void initializeGame() {
         map = new TileMap(13, 11);
 
-        // spawn the first connected player at the top-left corner if one exists
+        // spawn players
+        int x1=0; int y1=0;
         if (players.size() > 0) {
             DLList<String> keys = players.keySet().toLinkedList();
-            String firstKey = keys.get(0);
-            if (firstKey != null) {
-                Player p = players.get(firstKey);
-                if (p != null) {
-                    p.setPosition(0, 0);
+            for(String id:keys){
+                Player p = players.get(id);
+                if(p!=null){
+                    p.setPosition(x1, y1); //going aroung the 4 corners?
+                    x1= (x1==0) ? map.getCols()-1 : 0;
+                    y1 = (y1==map.getRows()-1 || x1==map.getCols()-1) ? map.getRows()-1 : 0;
                 }
             }
         }

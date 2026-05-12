@@ -30,12 +30,15 @@ public class Player {
     }
 
     public void move(int dx, int dy, TileMap map) {
-        int newX = x + dx * speed;
-        int newY = y + dy * speed;
+        int nextX = x + dx * speed;
+        int nextY = y + dy * speed;
+        
+        int playerSize = TileMap.TILE_SIZE - 10; 
+        int offset = 5;
 
-        if (!map.isBlocked(newX, newY)) {
-            x = newX;
-            y = newY;
+        if (!map.isAreaBlocked(nextX + offset, nextY + offset, playerSize, playerSize)) {
+            x = nextX;
+            y = nextY;
         }
     }
     public void setPosition(int x1, int y1){
@@ -49,6 +52,8 @@ public class Player {
     public int getCol() {
         return x / TileMap.TILE_SIZE;
     }
+    public int getX(){return x;}
+    public int getY(){return y;}
 
     public boolean isAlive() {
         return alive;

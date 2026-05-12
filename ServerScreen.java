@@ -57,12 +57,14 @@ public class ServerScreen extends JPanel {
 			Socket clientSocket = serverSocket.accept();
 			System.out.println("Got connection!");
 
-			SwingUtilities.invokeLater(() -> {
-				addMessage("Client connected");
-			});
+			
 
 			ServerThread st = new ServerThread(clientSocket, mg,nextID++);
 			mg.addThread(st);
+
+			SwingUtilities.invokeLater(() -> {
+				addMessage("Client connected. Clients connected: "+mg.numClients());
+			});
 
 			new Thread(st).start();
 		}

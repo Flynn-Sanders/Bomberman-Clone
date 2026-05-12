@@ -85,11 +85,11 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             for (String id : playerKeys) {
                 Player p = players.get(id); 
                 if (p != null) {
-                    g.setColor(Color.blue);  // change to sprite later
-                    g.fillOval(p.getCol() * TileMap.TILE_SIZE, p.getRow() * TileMap.TILE_SIZE, TileMap.TILE_SIZE, TileMap.TILE_SIZE);
+                    g.setColor(Color.blue);
+                    g.fillOval(p.getX(), p.getY(), TileMap.TILE_SIZE - 4, TileMap.TILE_SIZE - 4);
                 }
             }
-            
+                        
             MyHashMap<String, Bomb> bombs = gameState.getBombs();
             DLList<String> bombKeys = bombs.keySet().toLinkedList();
             for (String key : bombKeys) {

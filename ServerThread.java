@@ -28,14 +28,16 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
-        while (!socket.isClosed() && !Thread.currentThread().isInterrupted()) {
-            String msg = read();
-            if (msg == null || msg.isEmpty()) {
-                break;
+        try {
+            while (!socket.isClosed()) {
+                String msg = read();
+                if (msg == null) break;
+                handleMessage(msg);
             }
-            handleMessage(msg);
+        } finally {
+            manager.getGameManager().removePlayer(playerID);
+            closeConnection();
         }
-        closeConnection();
     }
 
     private void handleMessage(String msg) {

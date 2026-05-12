@@ -14,7 +14,7 @@ public class Manager {
         new Thread(gameManager).start();
     }
 
-    public void addThread(ServerThread st) {
+    public synchronized void addThread(ServerThread st) {
         clients.add(st);
         requiredReady++;
     }
@@ -24,9 +24,9 @@ public class Manager {
             st.send(message);
         }
     }
-    public void playerReady(String id) {
+    public synchronized void playerReady(String id) {
         readyCount++;
-    
+        System.out.println("Ready: "+readyCount+" / "+clients.size());
         if (readyCount >= requiredReady) {
             startGame();
         }
@@ -41,4 +41,6 @@ public class Manager {
     public GameManager getGameManager() {
         return gameManager;
     }
+
+    public int numClients(){return clients.size(); }
 }
