@@ -24,10 +24,18 @@ public class Player {
 
         public void update(TileMap map) {
         System.out.println("Updating player " + id + " at (" + x + ", " + y + ")"); // Debug log
-        if (movingUp) move(0, -1, map);
-        if (movingDown) move(0, 1, map);
-        if (movingLeft) move(-1, 0, map);
-        if (movingRight) move(1, 0, map);
+        int dx = 0;
+        int dy = 0;
+
+        if (movingUp && !movingDown) dy = -1;
+        else if (movingDown && !movingUp) dy = 1;
+
+        if (movingLeft && !movingRight) dx = -1;
+        else if (movingRight && !movingLeft) dx = 1;
+
+        if (dx != 0 || dy != 0) {
+            move(dx, dy, map);
+        }
     }
     
     public void move(int dx, int dy, TileMap map) {
@@ -36,10 +44,16 @@ public class Player {
     
         System.out.println("Attempting to move to (" + nextX + ", " + nextY + ")"); // Debug log
     
-        int playerSize = TileMap.TILE_SIZE - 10;
-        int offset = 5;
+        int playerSize = TileMap.TILE_SIZE - 4;
+        int mapWidth = map.getCols() * TileMap.TILE_SIZE;
+        int mapHeight = map.getRows() * TileMap.TILE_SIZE;
+
+        if (nextX < 0 || nextY < 0 || nextX + playerSize > mapWidth || nextY + playerSize > mapHeight) {
+            System.out.println("Blocked by boundary at (" + nextX + ", " + nextY + ")");
+            return;
+        }
     
-        if (!map.isAreaBlocked(nextX + offset, nextY + offset, playerSize, playerSize)) {
+        if (!map.isAreaBlocked(nextX, nextY, playerSize, playerSize)) {
             x = nextX;
             y = nextY;
             System.out.println("Moved to (" + x + ", " + y + ")"); // Debug log
@@ -52,11 +66,11 @@ public class Player {
     }
 
     public int getRow() {
-        return y / TileMap.TILE_SIZE;
+        return (y + TileMap.TILE_SIZE / 2) / TileMap.TILE_SIZE;
     }
 
     public int getCol() {
-        return x / TileMap.TILE_SIZE;
+        return (x + TileMap.TILE_SIZE / 2) / TileMap.TILE_SIZE;
     }
     public int getX(){return x;}
     public int getY(){return y;}

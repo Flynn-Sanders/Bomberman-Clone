@@ -42,6 +42,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         this.add(readyButton);
 
         this.setFocusable(true);
+        this.addKeyListener(this);
     }
 
     public Dimension getPreferredSize() {
