@@ -48,6 +48,11 @@ public class TileMap {
             grid[row][col] = 0;
         }
     }
+
+    public boolean isInBounds(int row, int col) {
+        return row >= 0 && col >= 0 && row < rows && col < cols;
+    }
+    
     public int getRows(){return rows;}
     public int getCols(){ return cols; }
 

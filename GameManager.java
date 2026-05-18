@@ -86,7 +86,24 @@ public class GameManager implements Runnable {
     }
 
     private void explode(Bomb b) {
-        // damage players, destroy blocks, chain bombs, etc
+        int row = b.getRow();
+        int col = b.getCol();
+        int range = b.getRange();
+        for(int r=row-range; r<=row+range; r++){
+            for(int c=col-range; c<=col+range; c++){
+                if(Math.abs(r)+Math.abs(c) > b.getRange()) continue; 
+                if(map.isInBounds(r, c)){
+                    map.destroyBlock(r, c);
+                    DLList<String> playerKeys = players.keySet().toLinkedList();
+                    for (String id : playerKeys) {
+                        Player p = players.get(id);
+                        if (p != null && p.isAlive() && p.getRow() == r && p.getCol() == c) {
+                            p.kill(); 
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void updatePlayers() {
