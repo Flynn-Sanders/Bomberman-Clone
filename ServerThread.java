@@ -12,14 +12,12 @@ public class ServerThread extends Thread {
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
-
-    int id; String displayName; String playerID;
+    String displayName; int playerID;
 
     public ServerThread(Socket socket, Manager manager, int ID) {
         this.socket = socket;
         this.manager = manager;
-        id=ID;
-        playerID="";
+        this.playerID=ID;
         try {
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.out.flush();
@@ -53,12 +51,11 @@ public class ServerThread extends Thread {
             case "JOIN":
                 if (parts.length < 2) return;
                 this.displayName = parts[1];
-                this.playerID = displayName + "#" + id; // unique id
                 this.player = manager.getGameManager().addPlayer(playerID);
                 send("JOINED:" + playerID);
                 break;
             case "READY":
-                if (playerID != null && !playerID.isEmpty()) {
+                if (playerID != null) {
                     manager.playerReady(playerID);
                 }
                 break;

@@ -1,6 +1,6 @@
 public class GameManager implements Runnable {
 
-    private MyHashMap<String, Player> players;
+    private MyHashMap<Integer, Player> players;
     private MyHashMap<String, Bomb> bombs;
 
     private MinHeap<Bomb> bombQueue;
@@ -22,18 +22,18 @@ public class GameManager implements Runnable {
     }
     public TileMap getMap(){ return map; }
 
-    public Player addPlayer(String id) {
+    public Player addPlayer(int id) {
         Player p = new Player(id);
         players.put(id, p);
         return p;
     }
 
-    public void removePlayer(String id) {
+    public void removePlayer(int id) {
         players.remove(id);
     }
 
 
-    public void placeBomb(String playerId) {
+    public void placeBomb(int playerId) {
         Player p = players.get(playerId);
         if (p == null) return;
 
@@ -65,7 +65,7 @@ public class GameManager implements Runnable {
         map = new TileMap(13, 11);
     
         if (players.size() > 0) {
-            DLList<String> keys = players.keySet().toLinkedList();
+            DLList<Integer> keys = players.keySet().toLinkedList();
             int[][] corners = {
                 {0, 0}, // top left
                 {(map.getCols() - 1) * TileMap.TILE_SIZE, 0}, // top right
@@ -74,7 +74,7 @@ public class GameManager implements Runnable {
             };
     
             int i = 0;
-            for (String id : keys) {
+            for (int id : keys) {
                 Player p = players.get(id);
                 if (p != null) {
                     int[] corner = corners[i % 4];
@@ -89,26 +89,48 @@ public class GameManager implements Runnable {
         int row = b.getRow();
         int col = b.getCol();
         int range = b.getRange();
-        for(int r=row-range; r<=row+range; r++){
-            for(int c=col-range; c<=col+range; c++){
-                if(Math.abs(r)+Math.abs(c) > b.getRange()) continue; 
-                if(map.isInBounds(r, c)){
-                    map.destroyBlock(r, c);
-                    DLList<String> playerKeys = players.keySet().toLinkedList();
-                    for (String id : playerKeys) {
-                        Player p = players.get(id);
-                        if (p != null && p.isAlive() && p.getRow() == r && p.getCol() == c) {
-                            p.kill(); 
-                        }
-                    }
+
+        processExplosionTile(row, col);
+
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        for (int[] dir : directions) {
+            for (int i = 1; i <= range; i++) {
+                int r = row + (dir[0] * i);
+                int c = col + (dir[1] * i);
+
+                if (!map.isInBounds(r, c)) break;
+
+                int tileType = map.getTileType(r, c); 
+
+                if (tileType == 1) { 
+                    break; 
+                }
+
+                processExplosionTile(r, c);
+
+                if (tileType == 2) { 
+                    break; 
                 }
             }
         }
     }
 
+    private void processExplosionTile(int r, int c) {
+        map.destroyBlock(r, c);
+
+        DLList<Integer> playerKeys = players.keySet().toLinkedList();
+        for (int id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null && p.isAlive() && p.getRow() == r && p.getCol() == c) {
+                p.kill();
+            }
+        }
+    }
+
     private void updatePlayers() {
-        DLList<String> playerKeys = players.keySet().toLinkedList();
-        for (String id : playerKeys) {
+        DLList<Integer> playerKeys = players.keySet().toLinkedList();
+        for (int id : playerKeys) {
             Player p = players.get(id);
             if (p != null && p.isAlive()) {
                 p.update(map); 
@@ -125,8 +147,8 @@ public class GameManager implements Runnable {
         StringBuilder sb = new StringBuilder();
         
         // P:id,row,col;
-        DLList<String> playerKeys = players.keySet().toLinkedList();
-        for (String id : playerKeys) {
+        DLList<Integer> playerKeys = players.keySet().toLinkedList();
+        for (int id : playerKeys) {
             Player p = players.get(id);
             if (p != null) {
                 sb.append("P:").append(id).append(",").append(p.getX()).append(",").append(p.getY()).append(";");

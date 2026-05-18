@@ -1,6 +1,6 @@
 public class Player {
 
-    private String id;
+    private int id;
 
     private int x, y;
     private int speed;
@@ -12,7 +12,7 @@ public class Player {
 
     public boolean movingUp, movingDown, movingLeft, movingRight;
 
-    public Player(String id) {
+    public Player(int id) {
         this.id = id;
         this.x = 0;
         this.y = 0;
@@ -83,7 +83,7 @@ public class Player {
         alive = false;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 }

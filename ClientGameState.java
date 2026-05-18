@@ -11,6 +11,7 @@ public class ClientGameState {
     public void updateFromServer(String data) {
         players = new MyHashMap<>();
         bombs = new MyHashMap<>();
+        int[][] map = null;
         
         // P:id,row,col;B:row,col,timer;
         String[] entries = data.split(";");
@@ -39,6 +40,7 @@ public class ClientGameState {
                 Bomb b = new Bomb(row, col, "", timer);  // not needed on client 
                 bombs.put(key, b);
             }
+            
         }
     }
 
