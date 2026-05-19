@@ -61,7 +61,7 @@ public class GameManager implements Runnable {
             bombs.remove(key);
 
             explode(b);
-            mg.broadcast("EXPLODE");
+            mg.broadcast("EXPLOSION");
         }
     }
     public void initializeGame() {
@@ -158,12 +158,15 @@ public class GameManager implements Runnable {
             }
         }
 
-        if (aliveCount == 1) {
-            gameWon = true;
-            mg.broadcast("WINNER:" + lastAliveId);
-        } else if (aliveCount == 0) {
-            gameWon = true;
-            mg.broadcast("WINNER:NONE");
+        //only triggers if >1 player; allows solo testing
+        if (players.size() > 1) {
+            if (aliveCount == 1) {
+                gameWon = true;
+                mg.broadcast("WINNER:" + lastAliveId);
+            } else if (aliveCount == 0) {
+                gameWon = true;
+                mg.broadcast("WINNER:NONE");
+            }
         }
     }
 

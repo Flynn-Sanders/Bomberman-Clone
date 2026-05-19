@@ -3,6 +3,8 @@ public class Manager {
     private DLList<ServerThread> clients;
     private GameManager gameManager;
 
+    private boolean gameStarted;
+
     int readyCount;
     int requiredReady;
 
@@ -11,7 +13,6 @@ public class Manager {
         gameManager = new GameManager(this);
         readyCount=0; requiredReady=0;
 
-        new Thread(gameManager).start();
     }
 
     public synchronized void addThread(ServerThread st) {
@@ -33,9 +34,14 @@ public class Manager {
         
     }
     public void startGame() {
+        if (gameStarted) return; 
+        gameStarted = true;
+        
         gameManager.initializeGame();
-        String mapData= gameManager.getMap().toString();
-        broadcast("START:"+mapData);
+        String mapData = gameManager.getMap().toString();
+        broadcast("START:" + mapData);
+        
+        new Thread(gameManager).start(); 
     }
 
     public GameManager getGameManager() {

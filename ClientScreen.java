@@ -245,8 +245,8 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         if(msg.startsWith("WINNER:")){
             String winner = msg.split(":")[1];
             String message = winner.equals("NONE") ? "It's a tie!" : "Player " + winner + " wins!";
-            JOptionPane.showMessageDialog(this, message);
             playSound("win");
+            JOptionPane.showMessageDialog(this, message);
         }
         if (msg.equals("EXPLOSION")) {
             playSound("explosion");
