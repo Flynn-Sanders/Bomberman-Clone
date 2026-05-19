@@ -78,7 +78,7 @@ public class GameManager implements Runnable {
                 Player p = players.get(id);
                 if (p != null) {
                     int[] corner = corners[i % 4];
-                    p.setPosition(corner[0], corner[1]); // Use pixel positions
+                    p.setPosition(corner[0], corner[1]);
                     i++;
                 }
             }
@@ -133,7 +133,7 @@ public class GameManager implements Runnable {
         for (int id : playerKeys) {
             Player p = players.get(id);
             if (p != null && p.isAlive()) {
-                p.update(map); 
+                p.update(map, bombs); 
             }
         }
     }

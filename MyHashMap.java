@@ -1,64 +1,73 @@
-public class MyHashMap<K,V>{
-    private Object[] hashArray;
+public class MyHashMap<K, V> {
+    private Object[] keys;
+    private Object[] values;
     private int size;
     private MyHashSet<K> keySet;
+    private int capacity = 100;
 
-    public MyHashMap(){
-        size=0;
-        hashArray = new Object[10];
+    public MyHashMap() {
+        size = 0;
+        keys = new Object[capacity];
+        values = new Object[capacity];
         keySet = new MyHashSet<>();
     }
 
+    private int hash(Object key) {
+        return Math.abs(key.hashCode()) % capacity;
+    }
+
     @SuppressWarnings("unchecked")
-    public V put(K key, V value){
-        if (!keySet.contains(key)) size++;
-        V toReturn = (V)hashArray[key.hashCode()];
-        hashArray[key.hashCode()] = value;
-        keySet.add(key);
+    public V put(K key, V value) {
+        int index = hash(key);
         
-        return toReturn;
-        
-    }
-    
-    public boolean containsKey(Object o){
-        return keySet.contains(o);
-    }
+        while (keys[index] != null && !keys[index].equals(key)) {
+            index = (index + 1) % capacity;
+        }
 
+        if (keys[index] == null) {
+            size++;
+            keySet.add(key);
+        }
+
+        V old = (V) values[index];
+        keys[index] = key;
+        values[index] = value;
+        return old;
+    }
 
     @SuppressWarnings("unchecked")
-    public V get(Object o){
-        return (V) hashArray[o.hashCode()];
+    public V get(Object key) {
+        int index = hash(key);
+        int start = index;
+        while (keys[index] != null) {
+            if (keys[index].equals(key)) return (V) values[index];
+            index = (index + 1) % capacity;
+            if (index == start) break; 
+        }
+        return null;
+    }
+
+    public boolean containsKey(Object key) {
+        return get(key) != null;
     }
 
     @SuppressWarnings("unchecked")
-    public V remove(Object o){
-        V toReturn = (V)hashArray[o.hashCode()];
-        hashArray[o.hashCode()] = null;
-        keySet.remove(o);
-        size--;
-        return toReturn;
+    public V remove(Object key) {
+        int index = hash(key);
+        while (keys[index] != null) {
+            if (keys[index].equals(key)) {
+                V toReturn = (V) values[index];
+                keys[index] = null;
+                values[index] = null;
+                keySet.remove((K) key);
+                size--;
+                return toReturn;
+            }
+            index = (index + 1) % capacity;
+        }
+        return null;
     }
 
     public int size() { return size; }
     public MyHashSet<K> keySet() { return keySet; }
-
-    public String toString() {
-        String text = "";
-        DLList<K> list = keySet.toLinkedList();
-        for (int i = 0; i < list.size(); i++) {
-            K key = list.get(i); 
-            int index = key.hashCode();
-            text += key + " : " + hashArray[index] + "\n";
-        }   
-        return text;
-    }
-    public String keyString(){
-        String text = "";
-        DLList<K> list = keySet.toLinkedList();
-        for (int i = 0; i < list.size(); i++) {
-            K key = list.get(i); 
-            text += key.toString()+"\n";
-        }   
-        return text;
-    }
 }

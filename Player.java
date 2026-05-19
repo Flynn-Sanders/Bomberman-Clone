@@ -22,8 +22,7 @@ public class Player {
         this.alive = true;
     }
 
-        public void update(TileMap map) {
-        System.out.println("Updating player " + id + " at (" + x + ", " + y + ")"); // Debug log
+    public void update(TileMap map, MyHashMap<String, Bomb> bombs) {
         int dx = 0;
         int dy = 0;
 
@@ -34,35 +33,38 @@ public class Player {
         else if (movingRight && !movingLeft) dx = 1;
 
         if (dx != 0 || dy != 0) {
-            move(dx, dy, map);
+            move(dx, dy, map, bombs);
         }
     }
     
-    public void move(int dx, int dy, TileMap map) {
+    public void move(int dx, int dy, TileMap map, MyHashMap<String, Bomb> bombs) {
         int nextX = x + dx * speed;
         int nextY = y + dy * speed;
-    
-        System.out.println("Attempting to move to (" + nextX + ", " + nextY + ")"); // Debug log
-    
-        int playerSize = TileMap.TILE_SIZE - 4;
-        int mapWidth = map.getCols() * TileMap.TILE_SIZE;
-        int mapHeight = map.getRows() * TileMap.TILE_SIZE;
+        //current
+        int currentRow = getRow();
+        int currentCol = getCol();
+        String currentTileKey = currentRow + "," + currentCol;
+        //target
+        int nextRow = (nextY + TileMap.TILE_SIZE / 2) / TileMap.TILE_SIZE;
+        int nextCol = (nextX + TileMap.TILE_SIZE / 2) / TileMap.TILE_SIZE;
+        String nextTileKey = nextRow + "," + nextCol;
 
-        if (nextX < 0 || nextY < 0 || nextX + playerSize > mapWidth || nextY + playerSize > mapHeight) {
-            System.out.println("Blocked by boundary at (" + nextX + ", " + nextY + ")");
-            return;
+        boolean isMapBlocked = map.isAreaBlocked(nextX, nextY, TileMap.TILE_SIZE - 4, TileMap.TILE_SIZE - 4);
+        boolean isBombBlocked = bombs.containsKey(nextTileKey);
+
+        if (isBombBlocked && nextTileKey.equals(currentTileKey)) {
+            isBombBlocked = false; 
         }
-    
-        if (!map.isAreaBlocked(nextX, nextY, playerSize, playerSize)) {
+
+        if (!isMapBlocked && !isBombBlocked) {
             x = nextX;
             y = nextY;
-            System.out.println("Moved to (" + x + ", " + y + ")"); // Debug log
-        } else {
-            System.out.println("Blocked at (" + nextX + ", " + nextY + ")"); // Debug log
         }
     }
-    public void setPosition(int x1, int y1){
-        x=x1; y=y1;
+
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     public int getRow() {
