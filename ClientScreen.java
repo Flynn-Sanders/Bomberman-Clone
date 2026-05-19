@@ -17,7 +17,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     private JButton readyButton;
 
     private String username;
-    private String myPlayerID;
+    private int myPlayerID;
 
     private boolean[] keys = new boolean[256];
 
@@ -81,13 +81,13 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
                 }
             }
             
-            MyHashMap<String, Player> players = gameState.getPlayers();
-            DLList<String> playerKeys = players.keySet().toLinkedList();
+            MyHashMap<Integer, Player> players = gameState.getPlayers();
+            DLList<Integer> playerKeys = players.keySet().toLinkedList();
             int size = TileMap.TILE_SIZE;
-            for (String id : playerKeys) {
+            for (int id : playerKeys) {
             Player p = gameState.getPlayers().get(id);
                 if (p != null) {
-                    g.setColor(id.equals(myPlayerID) ? Color.BLUE : Color.RED);
+                    g.setColor((id==myPlayerID) ? Color.BLUE : Color.RED);
                     // DRAW PIXELS, NOT GRID COORDS
                     g.fillOval(p.getX(), p.getY(), size - 4, size - 4);
                 }
@@ -218,7 +218,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             });
         }
         if (msg.startsWith("JOINED:")) {
-            this.myPlayerID = msg.split(":")[1];
+            this.myPlayerID = Integer.parseInt(msg.split(":")[1]);
         }
         if (msg.startsWith("STATE:")) { 
             gameState.updateFromServer(msg.substring(6));

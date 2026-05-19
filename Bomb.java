@@ -1,14 +1,14 @@
 public class Bomb implements Comparable<Bomb> {
 
     private int row, col;
-    private String ownerId;
+    private int ownerId;
 
     private long placedTime;
     private long delay = 2000; // 2 seconds
 
     private int range;
 
-    public Bomb(int row, int col, String ownerId, long time) {
+    public Bomb(int row, int col, int ownerId, long time) {
         this.row = row;
         this.col = col;
         this.ownerId = ownerId;

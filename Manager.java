@@ -24,7 +24,7 @@ public class Manager {
             st.send(message);
         }
     }
-    public synchronized void playerReady(String id) {
+    public synchronized void playerReady(int id) {
         readyCount++;
         System.out.println("Ready: "+readyCount+" / "+clients.size());
         if (readyCount >= requiredReady) {

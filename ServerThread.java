@@ -55,7 +55,7 @@ public class ServerThread extends Thread {
                 send("JOINED:" + playerID);
                 break;
             case "READY":
-                if (playerID != null) {
+                if (playerID >= 0) {
                     manager.playerReady(playerID);
                 }
                 break;
