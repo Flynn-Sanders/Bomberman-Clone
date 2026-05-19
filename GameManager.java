@@ -9,6 +9,8 @@ public class GameManager implements Runnable {
 
     private boolean running;
 
+    private boolean gameWon = false;
+
     Manager mg;
 
     public GameManager(Manager manager) {
@@ -35,7 +37,7 @@ public class GameManager implements Runnable {
 
     public void placeBomb(int playerId) {
         Player p = players.get(playerId);
-        if (p == null) return;
+        if (p == null || !p.isAlive() || gameWon) return;
 
         int row = p.getRow();
         int col = p.getCol();
@@ -117,7 +119,11 @@ public class GameManager implements Runnable {
     }
 
     private void processExplosionTile(int r, int c) {
-        map.destroyBlock(r, c);
+        int tileType = map.getTileType(r, c);
+        if (tileType == 2) {
+            map.destroyBlock(r, c);
+            mg.broadcast("MAP_UPDATE:" + r + "," + c + ",0");
+        }
 
         DLList<Integer> playerKeys = players.keySet().toLinkedList();
         for (int id : playerKeys) {
@@ -139,7 +145,25 @@ public class GameManager implements Runnable {
     }
 
     private void checkWinCondition() {
-        // count alive players 
+        int aliveCount = 0;
+        int lastAliveId = -1;
+
+        DLList<Integer> playerKeys = players.keySet().toLinkedList();
+        for (int id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null && p.isAlive()) {
+                aliveCount++;
+                lastAliveId = id;
+            }
+        }
+
+        if (aliveCount == 1) {
+            gameWon = true;
+            mg.broadcast("WINNER:" + lastAliveId);
+        } else if (aliveCount == 0) {
+            gameWon = true;
+            mg.broadcast("WINNER:NONE");
+        }
     }
 
     private String getStateString() { 
@@ -150,7 +174,7 @@ public class GameManager implements Runnable {
         DLList<Integer> playerKeys = players.keySet().toLinkedList();
         for (int id : playerKeys) {
             Player p = players.get(id);
-            if (p != null) {
+            if (p != null && p.isAlive()) {
                 sb.append("P:").append(id).append(",").append(p.getX()).append(",").append(p.getY()).append(";");
             }
         }
@@ -172,7 +196,7 @@ public class GameManager implements Runnable {
 
     @Override
     public void run() {
-        while (running) {
+        while (running && !gameWon) {
             updatePlayers();
             updateBombs();
             checkWinCondition();

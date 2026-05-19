@@ -61,7 +61,6 @@ public class ServerThread extends Thread {
                 break;
                 case "MOVE_START":
                 if (parts.length < 2) return;
-                System.out.println("MOVE_START received: " + parts[1]); // Debug
                 if (player != null) { 
                     switch (parts[1]) {
                         case "UP":
@@ -81,7 +80,6 @@ public class ServerThread extends Thread {
                 break;
             case "MOVE_STOP":
                 if (parts.length < 2) return;
-                System.out.println("MOVE_STOP received: " + parts[1]); // Debug
                 if (player != null) { 
                     switch (parts[1]) {
                         case "UP":

@@ -5,6 +5,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 import java.net.*;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 
@@ -207,9 +210,10 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             System.out.println("Connection error: " + e.getMessage());
         }
     }
-    private void handleMessage(String msg) {
 
-        // System.out.println("Received: " + msg);
+    
+
+    private void handleMessage(String msg) {
 
         if (msg.startsWith("START")) {
             updateGridFromString(msg.substring(6));
@@ -219,6 +223,24 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         }
         if (msg.startsWith("JOINED:")) {
             this.myPlayerID = Integer.parseInt(msg.split(":")[1]);
+        }
+        if (msg.startsWith("MAP_UPDATE:")) {
+            String[] parts = msg.substring(11).split(",");
+            if (parts.length == 3) {
+                int r = Integer.parseInt(parts[0]);
+                int c = Integer.parseInt(parts[1]);
+                int val = Integer.parseInt(parts[2]);
+                
+                if (map != null && r < map.length && c < map[0].length) {
+                    map[r][c] = val;
+                    SwingUtilities.invokeLater(() -> repaint());
+                }
+            }
+        }
+        if(msg.startsWith("WINNER:")){
+            String winner = msg.split(":")[1];
+            String message = winner.equals("NONE") ? "It's a tie!" : "Player " + winner + " wins!";
+            JOptionPane.showMessageDialog(this, message);
         }
         if (msg.startsWith("STATE:")) { 
             gameState.updateFromServer(msg.substring(6));

@@ -49,7 +49,11 @@ public class Player {
         int nextCol = (nextX + TileMap.TILE_SIZE / 2) / TileMap.TILE_SIZE;
         String nextTileKey = nextRow + "," + nextCol;
 
-        boolean isMapBlocked = map.isAreaBlocked(nextX, nextY, TileMap.TILE_SIZE - 4, TileMap.TILE_SIZE - 4);
+        //corner unstucking
+        int padding = 7; 
+        boolean isMapBlocked = map.isAreaBlocked(nextX + padding, nextY + padding, 
+                               TileMap.TILE_SIZE - (padding * 2), TileMap.TILE_SIZE - (padding * 2));
+        
         boolean isBombBlocked = bombs.containsKey(nextTileKey);
 
         if (isBombBlocked && nextTileKey.equals(currentTileKey)) {

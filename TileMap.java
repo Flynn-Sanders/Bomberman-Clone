@@ -16,22 +16,43 @@ public class TileMap {
     private void generateMap() { //0 empty, 1 solid wall, 2 breakable
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
+                // walls
                 if (r % 2 == 1 && c % 2 == 1) {
-                    grid[r][c] = 1; // solid walls in repeating pattern
-                } else if( (r==0 || r==rows-1) && (c==0 || c==cols-1) ){
-                    grid[r][c]=0; //empty at 4 corners for players
-                } else {
-                    grid[r][c] = Math.random() < 0.3 ? 2 : 0; // 33% chance breakable on all other squares
+                    grid[r][c] = 1; 
+                } 
+                // safe zones near spawns
+                else if (isSafeZone(r, c)) {
+                    grid[r][c] = 0; 
+                } 
+                // random breakables
+                else {
+                    grid[r][c] = Math.random() < 0.3 ? 2 : 0; 
                 }
             }
         }
+    }
+
+    private boolean isSafeZone(int r, int c) {
+        // top left + adjacent
+        if ((r == 0 && c == 0) || (r == 0 && c == 1) || (r == 1 && c == 0)) return true;
+        
+        // top right + adjacent
+        if ((r == 0 && c == cols-1) || (r == 0 && c == cols-2) || (r == 1 && c == cols-1)) return true;
+        
+        // bottom left + adjacent
+        if ((r == rows-1 && c == 0) || (r == rows-1 && c == 1) || (r == rows-2 && c == 0)) return true;
+        
+        // bottom right + adjacent
+        if ((r == rows-1 && c == cols-1) || (r == rows-1 && c == cols-2) || (r == rows-2 && c == cols-1)) return true;
+
+        return false;
     }
 
     public boolean isBlocked(int x, int y) {
         int col = x / TILE_SIZE;
         int row = y / TILE_SIZE;
 
-        if (row < 0 || col < 0 || row >= rows || col >= cols)
+        if (row < 0 || col < 0 || row >= rows || col >= cols || x < 0 || y < 0)
             return true;
 
         return grid[row][col] != 0;
