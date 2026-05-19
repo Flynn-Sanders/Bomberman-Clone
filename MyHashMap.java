@@ -5,6 +5,8 @@ public class MyHashMap<K, V> {
     private MyHashSet<K> keySet;
     private int capacity = 100;
 
+    private static final Object DELETED = new Object();
+
     public MyHashMap() {
         size = 0;
         keys = new Object[capacity];
@@ -35,29 +37,12 @@ public class MyHashMap<K, V> {
         return old;
     }
 
-    @SuppressWarnings("unchecked")
-    public V get(Object key) {
-        int index = hash(key);
-        int start = index;
-        while (keys[index] != null) {
-            if (keys[index].equals(key)) return (V) values[index];
-            index = (index + 1) % capacity;
-            if (index == start) break; 
-        }
-        return null;
-    }
-
-    public boolean containsKey(Object key) {
-        return get(key) != null;
-    }
-
-    @SuppressWarnings("unchecked")
     public V remove(Object key) {
         int index = hash(key);
         while (keys[index] != null) {
             if (keys[index].equals(key)) {
                 V toReturn = (V) values[index];
-                keys[index] = null;
+                keys[index] = DELETED; 
                 values[index] = null;
                 keySet.remove((K) key);
                 size--;
@@ -66,6 +51,22 @@ public class MyHashMap<K, V> {
             index = (index + 1) % capacity;
         }
         return null;
+    }
+
+    public V get(Object key) {
+        int index = hash(key);
+        int start = index;
+        while (keys[index] != null) {
+            if (keys[index] != DELETED && keys[index].equals(key)) 
+                return (V) values[index];
+            index = (index + 1) % capacity;
+            if (index == start) break; 
+        }
+        return null;
+    }
+
+    public boolean containsKey(Object key) {
+        return get(key) != null;
     }
 
     public int size() { return size; }

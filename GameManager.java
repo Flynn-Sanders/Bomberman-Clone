@@ -61,9 +61,10 @@ public class GameManager implements Runnable {
             bombs.remove(key);
 
             explode(b);
+            mg.broadcast("EXPLODE");
         }
     }
-           public void initializeGame() {
+    public void initializeGame() {
         map = new TileMap(13, 11);
     
         if (players.size() > 0) {
@@ -197,8 +198,12 @@ public class GameManager implements Runnable {
     @Override
     public void run() {
         while (running && !gameWon) {
-            updatePlayers();
-            updateBombs();
+            synchronized(players) {
+                updatePlayers();
+            }
+            synchronized(bombs) {
+                updateBombs();
+            }
             checkWinCondition();
 
             mg.broadcast("STATE:"+getStateString());

@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import java.io.*;
 import java.net.*;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
@@ -127,6 +128,17 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             ex.printStackTrace();
         }
     }
+    private void playSound(String fileName) {
+        try {
+            File soundFile = new File("sounds/" + fileName+".wav"); 
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            System.err.println("Error playing sound: " + e.getMessage());
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {}
@@ -183,32 +195,25 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     }
 
     public void connect() {
-        try {
-            Socket socket = new Socket("localhost", 1024);
-            
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
-
-            System.out.println("Connected to the chat server!");
-
-            username = JOptionPane.showInputDialog("Enter username:");
-            out.writeObject("JOIN:" + username);
-            out.flush(); 
-
-            while (true) {
+        new Thread(() -> { 
             try {
-                String msg = (String) in.readObject();
-                handleMessage(msg);
+                Socket socket = new Socket("localhost", 1024);
+                out = new ObjectOutputStream(socket.getOutputStream());
+                out.flush();
+                in = new ObjectInputStream(socket.getInputStream());
+
+                username = JOptionPane.showInputDialog("Enter username:");
+                out.writeObject("JOIN:" + username);
+                out.flush();
+
+                while (true) {
+                    String msg = (String) in.readObject();
+                    handleMessage(msg);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                break;
             }
-        }
-            
-        } catch (Exception e) {
-            System.out.println("Connection error: " + e.getMessage());
-        }
+        }).start();
     }
 
     
@@ -241,6 +246,10 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             String winner = msg.split(":")[1];
             String message = winner.equals("NONE") ? "It's a tie!" : "Player " + winner + " wins!";
             JOptionPane.showMessageDialog(this, message);
+            playSound("win");
+        }
+        if (msg.equals("EXPLOSION")) {
+            playSound("explosion");
         }
         if (msg.startsWith("STATE:")) { 
             gameState.updateFromServer(msg.substring(6));
