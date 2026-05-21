@@ -62,10 +62,10 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
 
     private void loadImages(){
         try {
-            bombImg = ImageIO.read(new File("bomb.png"));
-            breakableImg = ImageIO.read(new File("breakable.png"));
-            unbreakableImg = ImageIO.read(new File("unbreakable.png"));
-            grassImg = ImageIO.read(new File("grass.png"));
+            bombImg = ImageIO.read(new File("images/bomb.png"));
+            breakableImg = ImageIO.read(new File("images/breakable.png"));
+            unbreakableImg = ImageIO.read(new File("images/unbreakable.png"));
+            grassImg = ImageIO.read(new File("images/grass.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,8 +121,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             for (String key : bombKeys) {
                 Bomb b = bombs.get(key);
                 if (b != null) {
-                    g.setColor(Color.red);  // also change to sprite later
-                    g.fillOval(b.getCol() * size, b.getRow() * size, size, size);
+                    g.drawImage(bombImg, b.getCol() * size, b.getRow() * size, size, size, null);
                 }
             }
         }
