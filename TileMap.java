@@ -26,7 +26,7 @@ public class TileMap {
                 } 
                 // random breakables
                 else {
-                    grid[r][c] = Math.random() < 0.3 ? 2 : 0; 
+                    grid[r][c] = Math.random() < 0.5 ? 2 : 0; 
                 }
             }
         }

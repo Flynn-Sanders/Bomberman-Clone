@@ -12,11 +12,18 @@ import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+
+
 public class ClientScreen extends JPanel implements ActionListener, KeyListener {
 
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
+
+    private int size = TileMap.TILE_SIZE;
 
     private JButton readyButton;
 
@@ -28,6 +35,8 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     private ClientGameState gameState;
 
     private boolean started;
+
+    private BufferedImage bombImg,grassImg,breakableImg,unbreakableImg;
 
     private int[][] map;
 
@@ -45,8 +54,22 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         readyButton.setBackground(Color.darkGray);
         this.add(readyButton);
 
+        loadImages();
+
         this.setFocusable(true);
         this.addKeyListener(this);
+    }
+
+    private void loadImages(){
+        try {
+            bombImg = ImageIO.read(new File("bomb.png"));
+            breakableImg = ImageIO.read(new File("breakable.png"));
+            unbreakableImg = ImageIO.read(new File("unbreakable.png"));
+            grassImg = ImageIO.read(new File("grass.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public Dimension getPreferredSize() {
@@ -69,25 +92,21 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         }
         else{
             if (map != null) {
-                int size = TileMap.TILE_SIZE;
                 for (int r = 0; r < map.length; r++) {
                     for (int c = 0; c < map[r].length; c++) {
-                        g.setColor(switch (map[r][c]) {
-                            case 0 -> Color.white;
-                            case 1 -> Color.darkGray;
-                            case 2 -> Color.lightGray;
-                            default -> Color.pink; 
-                            // 0 = empty, 1 = indestructible wall, 2 = destructible wall
-                            //will use images later
-                        });
-                        g.fillRect(c * size, r * size, size, size);
+                        BufferedImage img = switch(map[r][c]) {
+                            case 0 -> grassImg;
+                            case 1 -> unbreakableImg;
+                            case 2 -> breakableImg;
+                            default -> grassImg; 
+                        };
+                        g.drawImage(img,c * size, r * size, size, size, null);
                     }
                 }
             }
             
             MyHashMap<Integer, Player> players = gameState.getPlayers();
             DLList<Integer> playerKeys = players.keySet().toLinkedList();
-            int size = TileMap.TILE_SIZE;
             for (int id : playerKeys) {
             Player p = gameState.getPlayers().get(id);
                 if (p != null) {
@@ -103,7 +122,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
                 Bomb b = bombs.get(key);
                 if (b != null) {
                     g.setColor(Color.red);  // also change to sprite later
-                    g.fillOval(b.getCol() * TileMap.TILE_SIZE, b.getRow() * TileMap.TILE_SIZE, TileMap.TILE_SIZE, TileMap.TILE_SIZE);
+                    g.fillOval(b.getCol() * size, b.getRow() * size, size, size);
                 }
             }
         }
