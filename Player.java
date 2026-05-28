@@ -16,7 +16,7 @@ public class Player {
         this.id = id;
         this.x = 0;
         this.y = 0;
-        this.speed = 4;
+        this.speed = 3;
         this.bombCount = 1;
         this.bombRange = 1;
         this.alive = true;
