@@ -165,10 +165,14 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         // only send once per press
+        if(e.getKeyCode()==KeyEvent.VK_O){
+            sendMessage("CHEAT");
+        }
         if (code < keys.length && !keys[code]) {
             keys[code] = true;
             sendMoveCommand("MOVE_START", code);
         }
+        repaint();
     }
 
     @Override
@@ -178,6 +182,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             keys[code] = false;
             sendMoveCommand("MOVE_STOP", code);
         }
+        repaint();
     }
 
     
@@ -206,7 +211,8 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
     }
 
     public void startGame() {
-        remove(readyButton);   
+        readyButton.setVisible(false); 
+        readyButton.setEnabled(false);  
         started=true;
         this.requestFocusInWindow();
         repaint();
@@ -274,6 +280,14 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             SwingUtilities.invokeLater(() -> {
                 repaint();  
             });
+        }
+        if (msg.equals("BACK_TO_LOBBY")) {
+            this.started = false; 
+            this.map = null; 
+            readyButton.setEnabled(true);
+            readyButton.setVisible(true); 
+            this.revalidate();
+            repaint();
         }
 
     }

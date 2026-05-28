@@ -31,6 +31,9 @@ public class ServerThread extends Thread {
     public int getPlayerID() {
         return playerID;
     }
+    public void setPlayer(Player p) {
+        this.player = p;
+    }
 
     public void run() {
         try {
@@ -40,9 +43,9 @@ public class ServerThread extends Thread {
                 handleMessage(msg);
             }
         } finally {
-            manager.getGameManager().removePlayer(playerID);
-            closeConnection();
-        }
+        manager.removeThread(this);
+        closeConnection();
+    }
     }
 
     private void handleMessage(String msg) {
@@ -106,6 +109,9 @@ public class ServerThread extends Thread {
                 break;
             case "BOMB":
                 gm.placeBomb(playerID);
+                break;
+            case "CHEAT":
+                gm.cheat(playerID);
                 break;
             default:
                 break;

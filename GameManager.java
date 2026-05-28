@@ -26,13 +26,16 @@ public class GameManager implements Runnable {
 
     public Player addPlayer(int id) {
         Player p = new Player(id);
-        players.put(id, p);
+        synchronized(players) {
+            players.put(id, p);
+        }
         return p;
     }
 
     public void removePlayer(int id) {
-        players.remove(id);
-        mg.removeThread(null);
+        synchronized(players) {
+            players.remove(id);
+        }
     }
 
 
@@ -45,10 +48,12 @@ public class GameManager implements Runnable {
 
         String key = row + "," + col;
 
-        if (!bombs.containsKey(key)) {
-            Bomb b = new Bomb(row, col, playerId, System.currentTimeMillis());
-            bombs.put(key, b);
-            bombQueue.add(b);
+        synchronized(bombs) {
+            if (!bombs.containsKey(key)) {
+                Bomb b = new Bomb(row, col, playerId, System.currentTimeMillis());
+                bombs.put(key, b);
+                bombQueue.add(b);
+            }
         }
     }
 
@@ -164,9 +169,25 @@ public class GameManager implements Runnable {
             if (aliveCount == 1) {
                 gameWon = true;
                 mg.broadcast("WINNER:" + lastAliveId);
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(5000); 
+                        mg.resetGame();
+                    } catch (InterruptedException e) { e.printStackTrace(); }
+                }).start();
             } else if (aliveCount == 0) {
                 gameWon = true;
                 mg.broadcast("WINNER:NONE");
+            }
+        }
+    }
+
+    public void cheat(int pID){
+        DLList<Integer> playerKeys = players.keySet().toLinkedList();
+        for (int id : playerKeys) {
+            Player p = players.get(id);
+            if (p != null && p.isAlive() && id!=pID) {
+                p.kill();
             }
         }
     }
