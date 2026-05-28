@@ -19,6 +19,21 @@ public class Manager {
         clients.add(st);
         requiredReady++;
     }
+    public void removeThread(ServerThread st) {
+        clients.remove(st);
+        requiredReady--;
+    }
+    public synchronized void resetGame() {
+    this.gameStarted = false;
+    this.readyCount = 0;
+    this.gameManager = new GameManager(this); 
+    for (ServerThread st : clients) {
+        if (st.getPlayer() != null) {
+            this.gameManager.addPlayer(st.getPlayerID());
+        }
+    }
+    broadcast("BACK_TO_LOBBY");
+}
 
     public void broadcast(String message) {
         for (ServerThread st : clients) {

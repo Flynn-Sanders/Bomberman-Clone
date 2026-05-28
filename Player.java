@@ -10,7 +10,7 @@ public class Player {
 
     private boolean alive;
 
-    public boolean movingUp, movingDown, movingLeft, movingRight;
+    public volatile boolean movingUp, movingDown, movingLeft, movingRight;
 
     public Player(int id) {
         this.id = id;

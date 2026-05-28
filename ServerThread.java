@@ -25,6 +25,13 @@ public class ServerThread extends Thread {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+    public int getPlayerID() {
+        return playerID;
+    }
+
     public void run() {
         try {
             while (!socket.isClosed()) {

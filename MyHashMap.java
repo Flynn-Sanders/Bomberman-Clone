@@ -21,20 +21,58 @@ public class MyHashMap<K, V> {
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {
         int index = hash(key);
-        
-        while (keys[index] != null && !keys[index].equals(key)) {
+        int firstAvailableIndex = -1;
+        int start = index;
+
+        while (keys[index] != null) {
+            if (keys[index] == DELETED) {
+                // remember if key isnt found
+                if (firstAvailableIndex == -1) firstAvailableIndex = index;
+            } else if (keys[index].equals(key)) {
+                // update existing key and return new
+                V old = (V) values[index];
+                values[index] = value;
+                return old;
+            }
+
             index = (index + 1) % capacity;
+            
+            // prevents infinite loop if the map is 100% full (no nulls)
+            if (index == start) break;
         }
 
-        if (keys[index] == null) {
-            size++;
-            keySet.add(key);
+        // use first deleted, if non use first null
+        int insertionIndex = (firstAvailableIndex != -1) ? firstAvailableIndex : index;
+
+        //  is map is truly full? (no nulls + no deleteds)
+        if (keys[insertionIndex] != null && keys[insertionIndex] != DELETED) {
+            resize();
+            return put(key, value); // try again after resizing
         }
 
-        V old = (V) values[index];
-        keys[index] = key;
-        values[index] = value;
-        return old;
+        size++;
+        keySet.add(key);
+        keys[insertionIndex] = key;
+        values[insertionIndex] = value;
+        return null;
+    }
+
+    public void resize(){
+        int newCapacity = capacity * 2;
+        Object[] oldKeys = keys;
+        Object[] oldValues = values;
+
+        keys = new Object[newCapacity];
+        values = new Object[newCapacity];
+        capacity = newCapacity;
+        size = 0;
+        keySet = new MyHashSet<>();
+
+        for (int i = 0; i < oldKeys.length; i++) {
+            if (oldKeys[i] != null && oldKeys[i] != DELETED) {
+                put((K) oldKeys[i], (V) oldValues[i]);
+            }
+        }
     }
 
     public V remove(Object key) {

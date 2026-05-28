@@ -32,6 +32,7 @@ public class GameManager implements Runnable {
 
     public void removePlayer(int id) {
         players.remove(id);
+        mg.removeThread(null);
     }
 
 
