@@ -36,7 +36,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
 
     private boolean started;
 
-    private BufferedImage bombImg,grassImg,breakableImg,unbreakableImg;
+    private BufferedImage bombImg,grassImg,breakableImg,unbreakableImg,friendlyImg,enemyImg;
 
     private int[][] map;
 
@@ -66,6 +66,9 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             breakableImg = ImageIO.read(new File("images/breakable.png"));
             unbreakableImg = ImageIO.read(new File("images/unbreakable.png"));
             grassImg = ImageIO.read(new File("images/grass.png"));
+            friendlyImg = ImageIO.read(new File("images/friendly.png"));
+            enemyImg = ImageIO.read(new File("images/enemy.png"));
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,9 +113,8 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
             for (int id : playerKeys) {
             Player p = gameState.getPlayers().get(id);
                 if (p != null) {
-                    g.setColor((id==myPlayerID) ? Color.BLUE : Color.RED);
-                    // DRAW PIXELS, NOT GRID COORDS
-                    g.fillOval(p.getX(), p.getY(), size - 4, size - 4);
+                    BufferedImage img = ((id==myPlayerID) ? friendlyImg : enemyImg);
+                    g.drawImage(img, p.getX(), p.getY(), size - 4, size - 4,null);
                 }
             }
                                 
