@@ -1,3 +1,19 @@
-#Ignore .class files
+# Compiled Java files
 *.class
+
+# IDE configuration
+.idea/
+*.iml
 .vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Build output
+build/
+out/
+bin/
+
+# Logs
+*.log
