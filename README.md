@@ -6,8 +6,8 @@ entirely from scratch in Java.
 
 ## Overview
 
-Describe the game, its objectives and its
-client-server architecture.
+A recreation of the classic NES Bomberman local multiplayer mode where two to four players compete by placing bombs to break structures and eliminate opponents to be the last one standing.
+One terminal opens a server, and separate terminals join as clients.
 
 ## Features
 
@@ -43,10 +43,11 @@ MyHashMap
 - For bombs, the key being the row/col identifying string 
 MyHashSet
 - Required to use MyHashMap
+- Wrapper; uses Java HashSet
 DLList
 - Required to use MyHashMap (bucketing)
 MinHeap
-- Sorts bombs by comparing detonation time and ordering by earliest to latest, allowing the top item in the heap to be checked with O(1) to see if a bomb needs to explode.
+- Places the earliest bomb at the top of the heap, allowing the it to be checked with O(1) to see if a bomb needs to explode.
 - Efficiency O(log n) by using bubble up insertion
 
 
