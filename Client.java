@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 public class Client {
     public static void main(String args[]) throws IOException {
 
-        // Create a new JFrame window with title "Client"
-        JFrame frame = new JFrame("Client");
+        // Create a new JFrame window
+        JFrame frame = new JFrame("Bomberman Client");
 
         // Create an instance of ClientScreen (custom JPanel for rendering)
         ClientScreen sc = new ClientScreen();

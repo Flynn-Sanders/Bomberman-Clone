@@ -12,7 +12,7 @@ public class ServerThread extends Thread {
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    String displayName; int playerID;
+    String displayName; int playerID; boolean canCheat = false;
 
     public ServerThread(Socket socket, Manager manager, int ID) {
         this.socket = socket;
@@ -61,6 +61,9 @@ public class ServerThread extends Thread {
             case "JOIN":
                 if (parts.length < 2) return;
                 this.displayName = parts[1];
+                if (this.displayName.equals("admin")) {
+                    this.canCheat = true;
+                }
                 this.player = manager.getGameManager().addPlayer(playerID);
                 send("JOINED:" + playerID);
                 break;
@@ -118,14 +121,14 @@ public class ServerThread extends Thread {
         }
     }
 
-    public void send(String msg) {
+    public synchronized void send(String msg) {
         try {
             out.writeObject(msg);
             out.flush();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private String read() {
+    private synchronized String read() {
         try {
             return (String) in.readObject();
         } catch (Exception e) {

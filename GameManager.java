@@ -14,6 +14,7 @@ public class GameManager implements Runnable {
     Manager mg;
 
     public GameManager(Manager manager) {
+        //
         players = new MyHashMap<>();
         bombs = new MyHashMap<>();
         bombQueue = new MinHeap<>();
@@ -169,15 +170,17 @@ public class GameManager implements Runnable {
             if (aliveCount == 1) {
                 gameWon = true;
                 mg.broadcast("WINNER:" + lastAliveId);
+            } else if (aliveCount == 0) {
+                gameWon = true;
+                mg.broadcast("WINNER:NONE");
+            }
+            if(aliveCount == 0 || aliveCount == 1) {
                 new Thread(() -> {
                     try {
                         Thread.sleep(5000); 
                         mg.resetGame();
                     } catch (InterruptedException e) { e.printStackTrace(); }
                 }).start();
-            } else if (aliveCount == 0) {
-                gameWon = true;
-                mg.broadcast("WINNER:NONE");
             }
         }
     }

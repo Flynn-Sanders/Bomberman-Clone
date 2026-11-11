@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+
 public class Manager {
 
     private DLList<ServerThread> clients;
     private GameManager gameManager;
 
     private boolean gameStarted;
+
+    private ArrayList<Integer> readyIDs;
 
     int readyCount;
     int requiredReady;
@@ -12,6 +16,7 @@ public class Manager {
         clients = new DLList<>();
         gameManager = new GameManager(this);
         readyCount=0; requiredReady=0;
+        readyIDs = new ArrayList<>();
 
     }
 
@@ -45,8 +50,10 @@ public class Manager {
         }
     }
     public synchronized void playerReady(int id) {
+        if(readyIDs.contains(id)) return;
         readyCount++;
-        System.out.println("Ready: "+readyCount+" / "+clients.size());
+        readyIDs.add(id);
+        System.out.println("Player " + id + " is ready. Total ready: " + readyCount+" / "+clients.size());
         if (readyCount >= requiredReady) {
             startGame();
         }

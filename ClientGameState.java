@@ -11,9 +11,9 @@ public class ClientGameState {
     public void updateFromServer(String data) {
         players = new MyHashMap<>();
         bombs = new MyHashMap<>();
-        int[][] map = null;
+        //int[][] map = null;
         
-        // P:id,row,col;B:row,col,timer;
+        
         String[] entries = data.split(";");
         for (String entry : entries) {
             if (entry.isEmpty()) continue;
@@ -22,8 +22,9 @@ public class ClientGameState {
             
             String type = parts[0];
             String[] values = parts[1].split(",");
-            
-                if (type.equals("P") && values.length >= 3) {
+                
+            if (type.equals("P") && values.length >= 3) {
+                // P:id,row,col
                 int id = Integer.parseInt(values[0]);
                 int posX = Integer.parseInt(values[1]);
                 int posY = Integer.parseInt(values[2]);

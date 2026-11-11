@@ -3,17 +3,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
-
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
-
-
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
 
 
@@ -168,6 +165,7 @@ public class ClientScreen extends JPanel implements ActionListener, KeyListener 
         int code = e.getKeyCode();
         // only send once per press
         if(e.getKeyCode()==KeyEvent.VK_O){
+            //forces game end sequence (debug)
             sendMessage("CHEAT");
         }
         if (code < keys.length && !keys[code]) {
