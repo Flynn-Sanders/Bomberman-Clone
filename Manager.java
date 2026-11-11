@@ -26,6 +26,7 @@ public class Manager {
     }
     public synchronized void removeThread(ServerThread st) {
         clients.remove(st);
+        readyIDs.remove(Integer.valueOf(st.playerID));
         requiredReady--; 
         if (gameManager != null) {
             gameManager.removePlayer(st.playerID);
@@ -36,6 +37,7 @@ public class Manager {
         this.gameStarted = false;
         this.readyCount = 0;
         this.gameManager = new GameManager(this); 
+        readyIDs.clear();
         
         for (ServerThread st : clients) {
             Player newP = this.gameManager.addPlayer(st.playerID);

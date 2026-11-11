@@ -20,28 +20,34 @@ client-server architecture.
 
 ## Architecture
 
-Explain the responsibilities of:
-- Manager
-- ServerThread
-- GameManager
-- Player
-- ClientScreen
-- ClientGameState
-- TileMap
+Manager:
+- 
+ServerThread:
+- 
+GameManager:
+- 
+Player:
+- 
+ClientScreen:
+- 
+ClientGameState:
+- 
+TileMap:
+- 
 
 ## Data Structures
 
 MyHashMap
 - Player and Bomb tracking. 
-- For players, the key being a player's ID # allows players to simply pass in the ID whenever they call for an update (movment, placing a bomb) to identify themselves nad easily be matched with the player object itself
-- For bombs, the key being the row/col/timer identifying string 
+- For players, the key being a player's ID # allows players to simply pass in the ID whenever they call for an update (movement, placing a bomb) to identify themselves and easily be matched with the player object itself
+- For bombs, the key being the row/col identifying string 
 MyHashSet
 - Required to use MyHashMap
 DLList
-- Required to use MyHashSet (bucketing)
+- Required to use MyHashMap (bucketing)
 MinHeap
-- Sorts bombs by comparing detonation time and ordering by earliest to latest, allowing the top item in the heap to be checked to see if a bomb needs to explode.
-- Efficiency O(log n) by using binary search to add new bombs to heap 
+- Sorts bombs by comparing detonation time and ordering by earliest to latest, allowing the top item in the heap to be checked with O(1) to see if a bomb needs to explode.
+- Efficiency O(log n) by using bubble up insertion
 
 
 ## Running the Game
@@ -53,8 +59,8 @@ On any Client Terminals (2-4): java Client
 
 ## Known Limitations
 
-Document bugs and incomplete features
-rather than implying the game is perfect.
+- The client currently connects to localhost
+- The server does not enforce the 2–4 player range.
 
 ## Author
 
