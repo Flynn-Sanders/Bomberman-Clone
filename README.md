@@ -56,7 +56,7 @@ MinHeap
 Preferred JDK 17 or later
 To compile: javac *.java
 On Server Terminal: java Server
-On any Client Terminals (2-4): java Client
+On any Client Terminals: java Client
 
 ## Known Limitations
 

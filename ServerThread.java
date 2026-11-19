@@ -114,7 +114,7 @@ public class ServerThread extends Thread {
                 gm.placeBomb(playerID);
                 break;
             case "CHEAT":
-                gm.cheat(playerID);
+                if(canCheat) gm.cheat(playerID);
                 break;
             default:
                 break;
